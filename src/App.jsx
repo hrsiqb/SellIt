@@ -5,6 +5,7 @@ import Header from './Components/header'
 import CategoriesBar from './Components/categoriesBar'
 import Footer from './Components/footer'
 
+import Skeleton from '@material-ui/lab/Skeleton';
 // import {Navbar, Nav, NavDropdown, Form, FormControl} from 'react-bootstrap'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -25,10 +26,38 @@ class App extends Component{
     render(){
         return(
             <div className="root"> 
-               <Header />
-               <CategoriesBar />
-               <div className="img"></div>
-               <h1>Site Dashboard</h1>
+                <Header />
+                <CategoriesBar />
+                <div className="img"></div>
+
+                <div style={{display: "flex", flexDirection: "row"}}>
+                    <div style={{margin: "20px"}}>
+                        <Skeleton variant="rect" width={210} height={118} />
+                        <Skeleton width="80%"/>
+                        <Skeleton width="60%" />
+                    </div>
+                    <div style={{margin: "20px"}}>
+                        <Skeleton variant="rect" width={210} height={118} />
+                        <Skeleton width="80%"/>
+                        <Skeleton width="60%" />
+                    </div>
+                    <div style={{margin: "20px"}}>
+                        <Skeleton variant="rect" width={210} height={118} />
+                        <Skeleton width="80%"/>
+                        <Skeleton width="60%" />
+                    </div>
+                    <div style={{margin: "20px"}}>
+                        <Skeleton variant="rect" width={210} height={118} />
+                        <Skeleton width="80%"/>
+                        <Skeleton width="60%" />
+                    </div>
+                    <div style={{margin: "20px"}}>
+                        <Skeleton variant="rect" width={210} height={118} />
+                        <Skeleton width="80%"/>
+                        <Skeleton width="60%" />
+                    </div>
+                </div>
+
                 <Footer />
             </div>
         )}
