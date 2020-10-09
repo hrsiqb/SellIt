@@ -1,7 +1,9 @@
 .App {
   text-align: center;
 }
-
+.root{
+  overflow: hidden;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -27,7 +29,72 @@
 .App-link {
   color: #61dafb;
 }
-
+.btn:focus{
+  outline: none;
+  box-shadow: none !important;
+}
+.img{
+  background-image: url('https://statics.olx.com.pk/external/base/img/hero_bg_pk.jpg');
+  background-repeat: no-repeat;
+  background-position: center; 
+  height: 250px;
+}
+.categoriesBar{
+  height: 40px;
+}
+.header{
+  border-bottom: 2px solid rgb(238, 238, 238)
+}
+.btn:focus{
+  outline: none;
+  box-shadow: none !important;
+}
+.bar{
+  border-bottom: 1px solid black;
+}
+.dropdownTitle{
+  font-size: 13px; 
+  font-weight: 700; 
+}
+.dropdown-toggle::after,.dropdownTitle:hover, .nav-link{
+  color: black !important;
+}
+.footerLink{
+  color: rgb(41, 197, 41) !important;
+  padding: 0 !important;
+  margin: 0;
+  width: 160px;
+}
+.footerLink:hover{
+  color: rgb(206, 201, 201) !important;
+  color: rgb(72, 226, 72) !important;
+}
+.socialHeading{
+  font-size: 30px;
+  font-weight: bold;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  border-bottom: 2px solid rgb(238, 238, 238);
+  margin: 0;
+}
+.socialIcon{
+  font-size: 100px;
+  margin: 0 30px;
+}
+.socialFooter, .socialBody{
+  display: flex;
+  width: inherit;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid rgb(238, 238, 238);
+}
+.socialBody{
+  flex-direction: row;
+  justify-content: center;
+  border: none;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
