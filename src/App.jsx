@@ -1,11 +1,14 @@
 import React,{Component} from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Header from './Components/header'
 import CategoriesBar from './Components/categoriesBar'
 import Footer from './Components/footer'
-
-import Skeleton from '@material-ui/lab/Skeleton';
+import {Item} from './Components/item';
+import Error404 from './Components/error';
+import HomePage from './Components/homePage';
+import Post from './Components/post';
+import {Route, Link, Switch, BrowserRouter as Router} from "react-router-dom"
+import Youtube from './Components/skeleton'
 // import {Navbar, Nav, NavDropdown, Form, FormControl} from 'react-bootstrap'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -25,40 +28,21 @@ import Skeleton from '@material-ui/lab/Skeleton';
 class App extends Component{
     render(){
         return(
-            <div className="root"> 
+            <div className="root">
+            <Router>
                 <Header />
                 <CategoriesBar />
-                <div className="img"></div>
-
-                <div style={{display: "flex", flexDirection: "row"}}>
-                    <div style={{margin: "20px"}}>
-                        <Skeleton variant="rect" width={210} height={118} />
-                        <Skeleton width="80%"/>
-                        <Skeleton width="60%" />
-                    </div>
-                    <div style={{margin: "20px"}}>
-                        <Skeleton variant="rect" width={210} height={118} />
-                        <Skeleton width="80%"/>
-                        <Skeleton width="60%" />
-                    </div>
-                    <div style={{margin: "20px"}}>
-                        <Skeleton variant="rect" width={210} height={118} />
-                        <Skeleton width="80%"/>
-                        <Skeleton width="60%" />
-                    </div>
-                    <div style={{margin: "20px"}}>
-                        <Skeleton variant="rect" width={210} height={118} />
-                        <Skeleton width="80%"/>
-                        <Skeleton width="60%" />
-                    </div>
-                    <div style={{margin: "20px"}}>
-                        <Skeleton variant="rect" width={210} height={118} />
-                        <Skeleton width="80%"/>
-                        <Skeleton width="60%" />
-                    </div>
-                </div>
+                
+                <Switch>
+                    <Route exact path={['/', '/home']} component={HomePage} />
+                    <Route path='/item' component={Item} />
+                    <Route path='/post' component={Post} />
+                    {/* if the path does'nt match any of the available routes, show error */}
+                    <Route path={'/'} component={Error404} />
+                </Switch>
 
                 <Footer />
+            </Router>
             </div>
         )}
 }
