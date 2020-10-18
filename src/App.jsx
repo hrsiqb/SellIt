@@ -1,49 +1,47 @@
-import React,{Component} from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import Header from './Components/header'
 import CategoriesBar from './Components/categoriesBar'
 import Footer from './Components/footer'
-import {Item} from './Components/item';
+import { ViewItem } from './Components/item';
 import Error404 from './Components/error';
 import HomePage from './Components/homePage';
 import Post from './Components/post';
-import {Route, Link, Switch, BrowserRouter as Router} from "react-router-dom"
-import Youtube from './Components/skeleton'
-// import {Navbar, Nav, NavDropdown, Form, FormControl} from 'react-bootstrap'
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import { Route, Link, Switch, BrowserRouter as Router, withRouter } from "react-router-dom"
+import { connect } from "react-redux";
+import { set_data } from './store/action'
 
-// import { makeStyles } from '@material-ui/core/styles';
-// import AppBar from '@material-ui/core/AppBar';
-// import Toolbar from '@material-ui/core/Toolbar';
-// import Typography from '@material-ui/core/Typography';
-// import Button from '@material-ui/core/Button';
-// import IconButton from '@material-ui/core/IconButton';
-// import DeleteIcon from '@material-ui/icons/Delete';
-// import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
-// import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
-// import Avatar from '@material-ui/core/Avatar';
-// import SearchIcon from '@material-ui/icons/Search';
-// import MenuIcon from '@material-ui/icons/Menu';
-
-class App extends Component{
-    render(){
-        return(
+class App extends Component {
+    render() {
+        console.log(this.props.name)
+        return (
             <div className="root">
-            <Router>
-                <Header />
-                <CategoriesBar />
-                
-                <Switch>
-                    <Route exact path={['/', '/home']} component={HomePage} />
-                    <Route path='/item' component={Item} />
-                    <Route path='/post' component={Post} />
-                    {/* if the path does'nt match any of the available routes, show error */}
-                    <Route path={'/'} component={Error404} />
-                </Switch>
+                <Router>
+                    <Header />
+                    <CategoriesBar />
 
-                <Footer />
-            </Router>
+                    <Switch>
+                        <Route exact path={['/SellIt', '/SellIt/home']} component={HomePage} />
+                        <Route path="/SellIt/item/:id" component={withRouter(ViewItem)} />
+                        <Route exact path='/SellIt/item' component={Error404} />
+                        <Route path='/SellIt/post' component={Post} />
+                        {/* if the path does'nt match any of the available routes, show error */}
+                        <Route path={'/SellIt/'} component={Error404} />
+                    </Switch>
+                    <button onClick={() => this.props.set_data("set data")}>set Data</button>
+                    <Footer />
+                </Router>
             </div>
-        )}
+        )
+    }
 }
-export default App;
+
+const mapStateToProps = (state) => ({//used for properties
+    name: state.name
+})
+
+const mapDispatchToProp = (dispatch) => ({//used for functions
+    set_data: (data) => dispatch(set_data(data))
+})
+
+export default connect(mapStateToProps, mapDispatchToProp)(App);

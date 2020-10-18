@@ -90,7 +90,12 @@
 .mr-13{margin-top: 13px !important}
 .mr-14{margin-top: 14px !important}
 .mr-25{margin-top: 25px !important} */
-
+.ol-n:focus{
+  outline: none !important;
+}
+.bs-n{
+  box-shadow: none !important;
+}
 .t-of-el{
   white-space: nowrap; 
   width: 100%; 
@@ -144,10 +149,6 @@
 .App-link {
   color: #61dafb;
 }
-.btn:focus{
-  outline: none;
-  box-shadow: none !important;
-}
 .img{
   background-image: url('https://statics.olx.com.pk/external/base/img/hero_bg_pk.jpg');
   background-repeat: no-repeat;
@@ -163,10 +164,6 @@
 }
 .header{
   border-bottom: 2px solid rgb(238, 238, 238)
-}
-.btn:focus{
-  outline: none;
-  box-shadow: none !important;
 }
 .bar{
   border-bottom: 1px solid black;

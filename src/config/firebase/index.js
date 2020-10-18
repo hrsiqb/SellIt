@@ -27,8 +27,7 @@ const storage = firebase.storage()
          
 //     }
 //   }
-async function getNumberOfAdds() {
-}
+
 var insertAddData = (data) => {
   firebase.database().ref(`All Ads`).push(data[0])
   .then(result => {
@@ -52,20 +51,48 @@ var insertAddData = (data) => {
     console.log(error)
   })
 }
-const getAllAdds = () => {
-  //get number of adds in the database
+function getNumberOfAdds(resolve) {  
   var ref = firebase.database().ref("All Ads")
   ref.once("value")
-    .then(function (snapshot) {//if number of user has been fetched, apply .on function
-      let numberOfAdds = snapshot.numChildren()
-      let fetchedAdds = 0
-      let dataArr = []
-      firebase.database().ref('All Ads').on("child_added", (data) => {
-        dataArr.push(data.val())
-        fetchedAdds++
-        if(fetchedAdds === numberOfAdds) return(dataArr)
-      })
+  .then((snapshot) => {
+      resolve(snapshot.numChildren())
+  })
+}
+const getAllAdds = (firstRun, addsToAppend, mainResolve) => {
+//if number of user has been fetched, apply .on function
+  var ref = firebase.database().ref("All Ads")
+  var promise = new Promise((resolve) => getNumberOfAdds(resolve))
+  promise.then((numberOfAdds) => {
+    let numberOfFetchedAdds = 0
+    let fetchedData = []
+    let appendedData = []
+    ref.on("child_added", (data) => {
+        fetchedData.splice(0, 0, data.val())
+        if(firstRun){
+            let numberOfAppendedAdds = 0
+            numberOfFetchedAdds++
+            // if(numberOfFetchedAdds > this.state.numberOfAdds-this.state.addsToAppend)
+            //     this.state.fetchedData[0].id = `card-${this.state.cardId--}`
+            if(numberOfFetchedAdds === numberOfAdds){
+              // this.state.cardId = this.state.addsToAppend+1
+              firstRun = false
+              let optimizedData = []
+              if(numberOfAdds > addsToAppend)
+                  optimizedData = fetchedData.slice(numberOfAppendedAdds, numberOfAppendedAdds+addsToAppend)
+              else optimizedData = fetchedData 
+              appendedData = Array.from(optimizedData)
+              let returnData = [
+                numberOfAdds,
+                firstRun,
+                appendedData,
+                fetchedData,
+                // numberOfFetchedAdds,
+              ]
+              mainResolve(returnData)
+            }
+        }
     })
+  })
 }
 //   render() {
 //     return (
