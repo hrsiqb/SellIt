@@ -44,10 +44,10 @@ class Footer extends Component{
                 <div className="socialFooter">
                     <h3 className="socialHeading">Follow Us</h3>
                     <div className="socialBody">
-                        <Nav.Link href="https://facebook.com"><RiFacebookCircleLine color="blue" className="socialIcon" /></Nav.Link>
-                        <Nav.Link href="https://youtube.com"><RiYoutubeLine color="red" className="socialIcon" /></Nav.Link>
-                        <Nav.Link href="https://instagram.com"><RiInstagramLine color="#dd3170" className="socialIcon" /></Nav.Link>
-                        <Nav.Link href="https://twitter.com"><RiTwitterLine color="rgb(29 161 242)" className="socialIcon" /></Nav.Link>
+                        <Nav.Link href="https://facebook.com" className="d-ib"><RiFacebookCircleLine color="blue" className="socialIcon" /></Nav.Link>
+                        <Nav.Link href="https://youtube.com" className="d-ib"><RiYoutubeLine color="red" className="socialIcon" /></Nav.Link>
+                        <Nav.Link href="https://instagram.com" className="d-ib"><RiInstagramLine color="#dd3170" className="socialIcon" /></Nav.Link>
+                        <Nav.Link href="https://twitter.com" className="d-ib"><RiTwitterLine color="rgb(29 161 242)" className="socialIcon" /></Nav.Link>
                     </div>
                 </div>
                 <div className="col-md-12 text-center">

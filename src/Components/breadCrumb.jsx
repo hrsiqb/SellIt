@@ -1,23 +1,18 @@
-import React,{Component} from 'react';
-import Typography from '@material-ui/core/Typography';
+import React, { Component } from 'react';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import Link from '@material-ui/core/Link';
+import { Link } from 'react-router-dom';
 
-function handleClick(event) {
-    console.info(event);
-    event.preventDefault();
-}
 
 class BreadCrumb extends Component {
-    render(){
+    render() {
         return (
             <Breadcrumbs aria-label="breadcrumb">
-            <Link color="inherit" href="/" onClick={handleClick}>
-                Home
+                <Link color="inherit" to="/SellIt">
+                    Home
             </Link>
-            <Link color="inherit" href="/getting-started/installation/" onClick={handleClick}>
-                Cars
-            </Link>
+                <Link color="inherit" to="/SellIt">
+                    {this.props.type}
+                </Link>
             </Breadcrumbs>
         )
     }

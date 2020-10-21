@@ -51,8 +51,7 @@ class Item extends Component {
         return (
             <div className="d-f jc-c mb-4 mt-5">
                 <div className="m-0">
-                    {/* <h3>ID: {id}</h3> */}
-                    <BreadCrumb />
+                    <BreadCrumb type={"Cars"} />
                     <br />
                     <div className="">
                         <section className="mr-3 d-il-b">
