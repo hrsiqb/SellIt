@@ -3,13 +3,13 @@ const set_data = (data) => {
         dispatch({type: "SETDATA", data: data })
     }
 }
-const get_data = (type, resolve, reject, iId = '') => {
+const get_data = (type, resolve, reject, id = '') => {
     return (dispatch) => {
         dispatch({
             type,
             resolve,
             reject,
-            iId
+            id,
         })
     }
 }

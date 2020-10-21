@@ -19,7 +19,6 @@ class Home extends Component {
         }
     }
     componentDidMount() {
-
         var promise = new Promise((resolve, reject) => this.props.get_data("GETADDS", resolve, reject))
         promise.then((returnedData) => this.setState(returnedData))
             .catch((returnedData) => this.setState(returnedData))

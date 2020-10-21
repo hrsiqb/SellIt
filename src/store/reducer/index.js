@@ -1,4 +1,4 @@
-import { storage, insertAddData, getAllAdds, getAddData } from '../../config/firebase'
+import { storage, insertAddData, getAllAdds, getAddData, getUserData } from '../../config/firebase'
 
 var INITIAL_STATE = {
     addsToAppend: 20,
@@ -22,14 +22,22 @@ export default (state = INITIAL_STATE, action) => {
             break;
 
         case "GETADDDATA":
-            var promise = new Promise((resolve, reject) => getAddData(resolve, reject, action.iId))
+            var promise = new Promise((resolve, reject) => getAddData(resolve, reject, action.id))
             promise.then((returnedData) => {
-                // INITIAL_STATE = returnedData
                 action.resolve(returnedData)
             })
-                .catch(() => {
-                    action.reject(INITIAL_STATE)
-                })
+            .catch(() => {
+                action.reject(INITIAL_STATE)
+            })
+            break;
+        case "GETUSERDATA":
+            var promise = new Promise((resolve, reject) => getUserData(resolve, reject, action.id))
+            promise.then((returnedData) => {
+                action.resolve(returnedData)
+            })
+            .catch(() => {
+                action.reject(INITIAL_STATE)
+            })
             break;
     }
     return state

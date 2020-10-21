@@ -41,16 +41,18 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({//used for properties
-    addsToAppend: state.addsToAppend,
-    numberOfAdds: state.numberOfAdds,
-    firstRun: state.firstRun,
-    appendedData: state.appendedData,
-    fetchedData: state.fetchedData,
+    AllAddsData: {
+        addsToAppend: state.addsToAppend,
+        numberOfAdds: state.numberOfAdds,
+        firstRun: state.firstRun,
+        appendedData: state.appendedData,
+        fetchedData: state.fetchedData,
+    }
 })
 
 const mapDispatchToProp = (dispatch) => ({//used for functions
     set_data: (data) => dispatch(set_data(data)),
-    get_data: (type, resolve, reject, iId) => dispatch(get_data(type, resolve, reject, iId))
+    get_data: (type, resolve, reject, id) => dispatch(get_data(type, resolve, reject, id))
 })
 
 export default connect(mapStateToProps, mapDispatchToProp)(App);

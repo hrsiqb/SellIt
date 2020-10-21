@@ -108,5 +108,13 @@ const getAddData = (resolve, reject, iId) => {
     resolve(returnedData.val())
   })
 }
+
+const getUserData = (resolve, reject, uId) => {
+  console.log("uid==.", uId)
+  firebase.database().ref(`Users/${uId}`).once('value')
+  .then((returnedData) => {
+    resolve(returnedData.val())
+  })
+}
 // .startAt(iId).endAt(iId)
-export { storage, firebase as default, insertAddData, getAllAdds, getAddData }
+export { storage, firebase as default, insertAddData, getAllAdds, getAddData, getUserData }

@@ -35,7 +35,10 @@
 .f-18{font-size: 18px !important}
 .f-19{font-size: 19px !important}
 .f-20{font-size: 20px !important}
-.f-b{font-weight: bold;}
+.f-21{font-size: 21px !important}
+.f-22{font-size: 22px !important}
+.f-23{font-size: 23px !important}
+.f-b{font-weight: bold !important;}
 .f-b1{font-weight: 100;}
 .f-b2{font-weight: 200;}
 .f-b3{font-weight: 300;}
@@ -47,8 +50,10 @@
 .f-b9{font-weight: 900;}
 .f-b10{font-weight: 1000;}
 
+.w-100{width: 100% !important;}
 .f-uc{text-transform: uppercase;}
 .f-cg{color: rgba(0,47,52,.64);}
+.fc-w{color: white !important;}
 .d-f-sb{    
   display: flex !important;
   justify-content: space-between;
@@ -91,6 +96,7 @@
 .ml-13{margin-top: 13px !important}
 .ml-14{margin-top: 14px !important}
 .ml-25{margin-top: 25px !important} */
+.h-5{height: 50px;}
 
 .mr-6{margin-right: 60px !important}
 .mr-7{margin-right: 70px !important}
@@ -133,6 +139,10 @@
 }
 .ai-c{
   align-items: center;
+}
+.sellerAvatar{
+  width: 60px !important;
+  height: 60px !important;
 }
 .itemSeller-card{
   width: 425px;

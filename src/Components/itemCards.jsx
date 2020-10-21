@@ -7,7 +7,10 @@ import Button from '@material-ui/core/Button';
 import { Route, Link, Switch, BrowserRouter as Router, useParams, withRouter } from "react-router-dom"
 import BreadCrumb from './breadCrumb';
 import Carousel from 'react-bootstrap/Carousel'
+import { FiPhone } from 'react-icons/fi';
 import Skeleton from '@material-ui/lab/Skeleton';
+import Avatar from '@material-ui/core/Avatar';
+import noUser from '../noUser'
 
 class ItemCard extends Component {
     render() {
@@ -130,28 +133,28 @@ class ItemDetailCard extends Component {
         const { price, title, createdAt, location } = this.props.itemDetail
         var formatPrice = Number(price).toLocaleString('en');
         return (
-            <Card className="itemDetail-card m-0" variant="outlined" >
-                <CardContent>
-                    {this.props.itemDetail ? 
-                    <React.Fragment>
-                        <h2 className="mb-2" className="f-b">{`Rs ${formatPrice}`}</h2>
-                        <p className="text-secondary f-16 f-b6">{title}</p>
-                    </React.Fragment> :
-                    <React.Fragment>
-                        <Skeleton className="mb-2" width="40%" height="50px" />
-                        <Skeleton width="90%" height="30px" />
-                    </React.Fragment>}
-
-                    <section className="d-f-sb mt-4">
-                        {this.props.itemDetail ? 
+            <Card className="itemDetail-card m-0 p-0" variant="outlined" >
+                <CardContent className="p-3">
+                    {this.props.itemDetail ?
                         <React.Fragment>
-                            <p className="f-12 f-cg f-b6">{location}</p>
-                            <p className="f-12 f-cg f-b6">{createdAt}</p>
+                            <h2 className="mb-2" className="f-b">{`Rs ${formatPrice}`}</h2>
+                            <p className="text-secondary h-5 f-16 f-b6">{title}</p>
                         </React.Fragment> :
                         <React.Fragment>
-                            <Skeleton width="30%" />
-                            <Skeleton width="20%" />
+                            <Skeleton className="mb-2" width="40%" height="50px" />
+                            <Skeleton width="90%" height="30px" />
                         </React.Fragment>}
+
+                    <section className="d-f-sb mt-4">
+                        {this.props.itemDetail ?
+                            <React.Fragment>
+                                <p className="f-12 f-cg f-b6 m-0">{location}</p>
+                                <p className="f-12 f-cg f-b6 m-0">{createdAt}</p>
+                            </React.Fragment> :
+                            <React.Fragment>
+                                <Skeleton width="30%" />
+                                <Skeleton width="20%" />
+                            </React.Fragment>}
                     </section>
                 </CardContent>
             </Card>
@@ -161,21 +164,47 @@ class ItemDetailCard extends Component {
 
 class ItemSellerCard extends Component {
     render() {
-        const sellerId = this.props.itemSeller
+        const { photoUrl, name, memberSince, phone } = this.props.itemSeller
+        let userImage = ''
+        photoUrl ? userImage = photoUrl : userImage = noUser.userSecondary
+        console.log(userImage)
         return (
             <Card className="itemSeller-card m-0" variant="outlined" >
                 <CardContent>
-                    <Skeleton className="mb-2" width="40%" height="40px" />
+                    {this.props.itemSeller ? 
+                    <p className="mb-2 f-23 f-b5">Seller description</p>
+                    :
+                    <Skeleton className="mb-2" width="40%" height="40px" />}
                     <section className="d-fr ai-c">
-                        <Skeleton variant="circle" width="60px" height="60px" />
+                        {this.props.itemSeller ? 
+                        <Avatar className="sellerAvatar" alt="userAvatar" src={userImage} />
+                        :
+                        <Skeleton variant="circle" width="60px" height="60px" />}
                         <section className="ml-2">
-                            <Skeleton className="" width="110px" height="25px" />
-                            <Skeleton className="" width="130px" height="20px" />
+                            {this.props.itemSeller ? 
+                            <React.Fragment>
+                                <p className="f-16 f-b7 m-0">{name}</p>
+                                <p className="text-secondary f-12 f-b6 m-0">{`Member since ${memberSince}`}</p>
+                            </React.Fragment>
+                            :
+                            <React.Fragment>
+                                <Skeleton width="110px" height="25px" />
+                                <Skeleton width="130px" height="20px" />
+                            </React.Fragment>}
                         </section>
                     </section>
-                    <Skeleton className="mb-2" width="100%" height="70px" />
+                        {this.props.itemSeller ? 
+                        <Button className="bc-blk fc-w f-b mb-2 mt-3 pt-2 pb-2 w-100" variant="contained">Chat With Seller</Button>
+                        :
+                        <Skeleton className="mb-2" width="100%" height="70px" />}
                     <section className="d-fr jc-c">
-                        <Skeleton width="40%" />
+                        {this.props.itemSeller ? 
+                        <React.Fragment>
+                            <p className="mt-3 mb-3">
+                                <FiPhone className="mr-2" />{phone}
+                            </p>
+                        </React.Fragment> : 
+                        <Skeleton width="40%" />}
                     </section>
                 </CardContent>
             </Card>
