@@ -1,79 +1,71 @@
-import React,{Component} from 'react';
+import React, { Component } from 'react';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import {Route, Link, Switch, BrowserRouter as Router, useParams, withRouter} from "react-router-dom"
+import { Route, Link, Switch, BrowserRouter as Router, useParams, withRouter } from "react-router-dom"
 import BreadCrumb from './breadCrumb';
+import Carousel from 'react-bootstrap/Carousel'
+import Skeleton from '@material-ui/lab/Skeleton';
+import {
+    ItemMediaSkeleton,
+    ItemDescSkeleton,
+    ItemDetailSkeleton,
+    ItemSellerSkeleton,
+} from './skeleton'
+import {
+    ItemMediaCard,
+    ItemDescCard,
+    ItemDetailCard,
+    ItemSellerCard,
+} from './itemCards'
 
-class ItemCard extends Component{
-    render(){    
-        const styles = {
-            margin: "30px 10px",
-            width: "300px",
-            maxHeight: "100px"
+class Item extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            // data: Array.from(new Array(20))
         }
-        const {price, title, location, createdAt, iId} = this.props.data
-        const src = this.props.data.src[0]
-        return (
-            <Link to={`/SellIt/item/${iId}`}>
-                <Card className="itemCard-card mt-1 mb-1 mr-2 ml-2" variant="outlined">
-                    <CardActionArea className="ol-n">
-                        <CardMedia className="itemCard-media">
-                            <img className="itemCard-img" src={src} alt="image"/>
-                        </CardMedia>
-                        <CardContent className="itemCard-content">
-                            <p className="f-20 f-b mb-0">{price}</p>
-                            <p className="f-14 f-b5 mb-0 f-cg t-of-el">{title}</p>
-                            <div className="itemCard-location-date">
-                                <span className="f-10 f-b5 f-uc f-cg mb-0">{location}</span>
-                                <span className="f-10 f-b5 f-uc f-cg mb-0">{createdAt}</span>
-                            </div>
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
-            </Link>
-        )
     }
-}
-// class Item extends Component{
-//     constructor(props){
-//         super(props)
-//     }
-//     componentDidMount(){
-//         console.log(`params==>${this.props.match.params.id}`)
-//     }
-//     render(){
-//         return(
-//             <div>
-//                 <BreadCrumb />
-//                 <Route path="/item/:id" component={withRouter(ViewItem)} />
-                
-//             </div>
-//         )}
-// }
-class ViewItem extends Component {
+
+    componentDidMount() {
+        let iId = this.props.match.params.id
+        let promise = new Promise((res, rej) => this.props.get_data("GETADDDATA", res, rej, iId))
+        promise.then(addData => {
+            const itemMedia = addData.src
+            const itemDesc = { description: addData.description, condition: addData.condition }
+            const itemDetail = { price: addData.price, title: addData.title, createdAt: addData.createdAt, location: addData.location }
+            const itemSeller = {id: addData.sellerId}
+            this.setState({itemMedia, itemDesc, itemDetail, itemSeller})
+            console.log(this.state)
+        })
+    }
+
     render() {
-        let id = this.props.match.params.id
         return (
-            <div>
-                <BreadCrumb />
-                <h3>ID: {id}</h3>
+            <div className="d-f jc-c mb-4 mt-5">
+                <div className="m-0">
+                    {/* <h3>ID: {id}</h3> */}
+                    <BreadCrumb />
+                    <br />
+                    <div className="">
+                        <section className="mr-3 d-il-b">
+                            {this.state.itemMedia ? <ItemMediaCard itemMedia={this.state.itemMedia} /> : <ItemMediaSkeleton />}
+                            {this.state.itemDesc ? <ItemDescCard itemDesc={this.state.itemDesc} /> : <ItemDescSkeleton />}
+                        </section>
+                        <section className="d-il-b va-t">
+                            <section className="mb-2">
+                                {this.state.itemDetail ? <ItemDetailCard itemDetail={this.state.itemDetail} /> : <ItemDetailSkeleton />}
+                            </section>
+                            <section>
+                                {this.state.itemSeller ? <ItemSellerCard itemSeller={this.state.itemSeller} /> : <ItemSellerSkeleton />}
+                            </section>
+                        </section>
+                    </div>
+                </div>
             </div>
         )
     }
 }
-
-// function ViewItem() {
-//     // We can use the `useParams` hook here to access
-//     // the dynamic pieces of the URL.
-//     let { id } = useParams();
-//     return (
-//       <div>
-//         <h3>ID: {id}</h3>
-//       </div>
-//     );
-//   }
-  
-
-export {ItemCard, ViewItem};
+export default withRouter(Item)

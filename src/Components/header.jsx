@@ -15,13 +15,13 @@ class Header extends Component{
     render(){
         return(
             <Navbar sticky="top" bg="light" className="header" expand="lg">
-            <Navbar.Brand className="ml-3" style={{fontSize: "30px"}}><b><Link className="n-l" to="/SellIt/">SellIt</Link></b></Navbar.Brand>
+            <Navbar.Brand className="ml-3" style={{fontSize: "30px"}}><b><Link className="n-l ol-n" to="/SellIt/">SellIt</Link></b></Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 {/* <Nav className="m-auto"> */}
                     <FormControl type="text" defaultValue="Pakistan" className="mr-sm-2 w-25" />
                     <FormControl type="text" placeholder="Search" className="mr-sm-2 w-50" />
-                    <Button  style={{ backgroundColor: "black" }}>
+                    <Button className="ol-n bc-blk">
                         <SearchIcon style={{ color: "white" }} />
                     </Button>
                     <IconButton className="btn ml-3" aria-label="chat">
@@ -31,7 +31,7 @@ class Header extends Component{
                         <NotificationsNoneIcon />
                     </IconButton>
                     <Avatar className="mr-4" alt="Remy Sharp" src={require("../Images/user.jpg")} />
-                    <Button className="btn mr-3 b-2bl f-20 ol-n bs-n" variant="outlined" color="primary"><b><Link className="n-l" to="/SellIt/post">+SELL</Link></b></Button>
+                    <Button className="btn mr-3 b-2blk f-20 ol-n bs-n" variant="outlined" color="primary"><b><Link className="n-l" to="/SellIt/post">+SELL</Link></b></Button>
                 {/* </Nav> */}
             </Navbar.Collapse>
             </Navbar>

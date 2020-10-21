@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  overflow-x: none;
 }
 .App-logo {
   height: 40vmin;
@@ -14,8 +15,14 @@
 .b-2bl{
   border: 2px solid blue !important;
 }
-.b-2bl:hover{
+.bc-blk{
+  background-color: black !important;
+}
+.b-2blk, .b-2bl:hover{
   border: 2px solid black !important;
+}
+.bs-2blk{
+  box-shadow: 0 0 0 2px black;
 }
 .f-10{font-size: 10px !important}
 .f-11{font-size: 11px !important}
@@ -42,6 +49,12 @@
 
 .f-uc{text-transform: uppercase;}
 .f-cg{color: rgba(0,47,52,.64);}
+.d-f-sb{    
+  display: flex !important;
+  justify-content: space-between;
+}
+.d-il-b{display: inline-block;}
+.va-t{vertical-align: top;}
 
 /* .mt-5{margin-top: 5px !important}
 .mt-6{margin-top: 6px !important}
@@ -77,19 +90,18 @@
 .ml-12{margin-top: 12px !important}
 .ml-13{margin-top: 13px !important}
 .ml-14{margin-top: 14px !important}
-.ml-25{margin-top: 25px !important}
+.ml-25{margin-top: 25px !important} */
 
-.mr-5{margin-top: 5px !important}
-.mr-6{margin-top: 6px !important}
-.mr-7{margin-top: 7px !important}
-.mr-8{margin-top: 8px !important}
-.mr-9{margin-top: 9px !important}
-.mr-10{margin-top: 10px !important}
-.mr-11{margin-top: 11px !important}
-.mr-12{margin-top: 12px !important}
-.mr-13{margin-top: 13px !important}
-.mr-14{margin-top: 14px !important}
-.mr-25{margin-top: 25px !important} */
+.mr-6{margin-right: 60px !important}
+.mr-7{margin-right: 70px !important}
+.mr-8{margin-right: 80px !important}
+.mr-9{margin-right: 90px !important}
+.mr-10{margin-right: 100px !important}
+.mr-11{margin-right: 110px !important}
+.mr-12{margin-right: 120px !important}
+.mr-13{margin-right: 130px !important}
+.mr-14{margin-right: 140px !important}
+.mr-15{margin-right: 150px !important}
 .ol-n:focus{
   outline: none !important;
 }
@@ -104,6 +116,53 @@
 }
 .h-p:hover{
   cursor: pointer;
+}
+.d-b-m-a{
+  display: block;
+  margin: auto;
+}
+.d-fr{
+  display: flex;
+  flex-direction: row;
+}
+.d-f{
+  display: flex;
+ }
+.jc-c{
+  justify-content: center;
+}
+.ai-c{
+  align-items: center;
+}
+.itemSeller-card{
+  width: 425px;
+  height: 250px;
+}
+.itemMedia-card{
+  display: flex !important;
+  flex-direction: column;
+  margin: 30px 10px;
+  width: 840px;
+  height: 580px;
+}
+.imageBtn{
+  height: 65px;
+  width: 65px;
+  background-size: contain;
+}
+.itemMedia-content{
+  display: flex;
+  flex-direction: row;
+  width: 840px;
+  padding: 0 !important;
+  align-items: center;
+}
+.itemDesc-card{
+  width: 840px;
+}
+.itemDetail-card{
+  width: 425px;
+  height: 170px;
 }
 .itemCard-location-date{
   align-items: flex-end;
