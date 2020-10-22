@@ -46,7 +46,8 @@ class Home extends Component {
             alignItems: 'center'
         }
         let itemsDiv = {
-            maxWidth: '1265px'
+            maxWidth: '1265px',
+            textAlign: 'center',
         }
         let data = this.state.appendedData.map((data, index) => data ? <ItemCard data={data} key={index} /> : (<ItemCardSkeleton />))
         return (

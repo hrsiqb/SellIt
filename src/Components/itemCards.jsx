@@ -168,7 +168,6 @@ class ItemSellerCard extends Component {
         const { photoUrl, name, memberSince, phone } = this.props.itemSeller
         let userImage = ''
         photoUrl ? userImage = photoUrl : userImage = noUser.userSecondary
-        console.log(userImage)
         return (
             <Card className="itemSeller-card m-0" variant="outlined" >
                 <CardContent>

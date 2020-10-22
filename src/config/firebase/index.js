@@ -1,9 +1,10 @@
 import firebase from 'firebase/app'
+import 'firebase/storage'
+import 'firebase/database'
+import 'firebase/auth'
 import DatabaseReference from 'firebase/database'
 import dataSnaphi from 'firebase/database'
 
-import 'firebase/storage'
-import 'firebase/database'
 
 const firebaseConfig = {
   apiKey: "AIzaSyC0VvedAJb7vZOnJy5cvaufSGgcoqpShis",
@@ -15,19 +16,60 @@ const firebaseConfig = {
   appId: "1:827510566225:web:9c1263d8188a3ada16f770",
   measurementId: "G-5166CHN7SM"
 }
-
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const storage = firebase.storage()
-// class InsertInDatabase extends Component {
-//   constructor(props) {
-//     super(props)
 
-//     this.state = {
+const loginWithFacebook = () => {
+  var provider = new firebase.auth.FacebookAuthProvider();
+  firebase.auth().signInWithPopup(provider)
+    .then(function (result) {
+      if (result.credential) {
+        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+        var token = result.credential.accessToken;
+      }
+      console.log("result=>", result)
+      // The signed-in user info.
+      var user = result.user;
+    })
+    .catch(function (error) {
+      console.log("error=>", error.message)
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // errorHandler(error)
+    });
+}
 
-//     }
-//   }
-
+const getLoginDetails = (res, rej) => {
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      // User is signed in.
+      res({
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        uId: user.uid,
+        isLoggedIn: true
+      })
+      // var displayName = user.displayName;
+      // var email = user.email;
+      // var emailVerified = user.emailVerified;
+      // var photoURL = user.photoURL;
+      // var isAnonymous = user.isAnonymous;
+      // var uId = user.uid;
+      // var providerData = user.providerData;
+    }
+    else {
+      // User is signed out.
+      rej (false)
+    }
+  });
+}
 var insertAddData = (data) => {
   firebase.database().ref(`All Ads`).push(data[0])
     .then(result => {
@@ -68,7 +110,6 @@ const getAllAdds = (firstRun, addsToAppend, mainResolve, mainReject) => {
       let fetchedData = []
       let appendedData = []
       ref.on("child_added", (data) => {
-        console.log("on")
         fetchedData.splice(0, 0, data.val())
         if (firstRun) {
           let numberOfAppendedAdds = 0
@@ -104,17 +145,25 @@ const getAddData = (resolve, reject, iId) => {
   // })
 
   firebase.database().ref(`All Ads/${iId}`).once('value')
-  .then((returnedData) => {
-    resolve(returnedData.val())
-  })
+    .then((returnedData) => {
+      resolve(returnedData.val())
+    })
 }
 
 const getUserData = (resolve, reject, uId) => {
-  console.log("uid==.", uId)
   firebase.database().ref(`Users/${uId}`).once('value')
-  .then((returnedData) => {
-    resolve(returnedData.val())
-  })
+    .then((returnedData) => {
+      resolve(returnedData.val())
+    })
 }
 // .startAt(iId).endAt(iId)
-export { storage, firebase as default, insertAddData, getAllAdds, getAddData, getUserData }
+export {
+  storage,
+  firebase as default,
+  insertAddData,
+  getAllAdds,
+  getAddData,
+  getUserData,
+  getLoginDetails,
+  loginWithFacebook,
+}
