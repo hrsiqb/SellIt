@@ -182,10 +182,9 @@
 .d-c {
     display: contents !important;
 }
-
-.w-38 {
-    width: 38%;
-}
+.h-42{height: 42px;}
+.w-38{width: 38%;}
+.w-85{width: 85%;}
 
 .w-100 {
     width: 100%;
@@ -414,11 +413,6 @@
     height: 250px;
 }
 
-.categoriesBar {
-    /* min-height: 40px; */
-    padding: 0 !important;
-}
-
 .n-l,
 .n-l:hover {
     /*no link*/
@@ -426,7 +420,7 @@
     text-decoration: none;
 }
 
-.header {
+.b-b-2gry {
     border-bottom: 2px solid rgb(238, 238, 238)
 }
 

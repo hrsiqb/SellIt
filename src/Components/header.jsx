@@ -5,7 +5,7 @@ import noUser from '../noUser'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom"
 import { loginWithFacebook, getLoginDetails } from '../config/firebase'
-import LoginDialog from './dialog'
+import { LoginDialog, RegisterDialog } from './dialog'
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,20 +18,27 @@ class Header extends Component {
     constructor() {
         super()
         this.state = {
-            openDialog: true,
+            openLoginDialog: false,
+            openRegisterDialog: false,
             isLoggedIn: false
         }
     }
     openDialog(type) {
         switch (type) {
             case 'login':
-                this.state.openDialog = true
+                this.state.openLoginDialog = true
+                this.setState(this.state)
+                break;
+            case 'register':
+                this.state.openRegisterDialog = true
                 this.setState(this.state)
                 break;
         }
     }
     closeDialog() {
-        this.state.openDialog = false
+        console.log("this.props.onClose")
+        this.state.openRegisterDialog = false
+        this.state.openLoginDialog = false
         this.setState(this.state)
     }
     render() {
@@ -45,7 +52,7 @@ class Header extends Component {
                 // this.setState({isLoggedIn: false})
             })
         return (
-            <Navbar sticky="top" bg="light" className="header" expand="lg">
+            <Navbar sticky="top" bg="light" className="b-b-2gry" expand="lg">
                 <Navbar.Brand className="ml-3" style={{ fontSize: "30px" }}><b><Link className="n-l ol-n" to="/SellIt/">SellIt</Link></b></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <div id="basic-navbar-nav" className="d-c">
@@ -74,7 +81,8 @@ class Header extends Component {
                             </React.Fragment>
                         )}
                     <Button className="mr-3 b-2blk f-20 ol-n bs-n" variant="outlined" color="primary"><b><Link className="n-l" to="/SellIt/post">+SELL</Link></b></Button>
-                    <LoginDialog onClose={() => this.closeDialog()} open={this.state.openDialog} />
+                    <LoginDialog onClose={() => this.closeDialog()} open={this.state.openLoginDialog} />
+                    <RegisterDialog onClose={() => this.closeDialog()} open={this.state.openRegisterDialog} />
                     {/* </Nav> */}
                 </div>
             </Navbar>

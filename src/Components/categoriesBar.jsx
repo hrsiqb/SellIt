@@ -20,7 +20,7 @@ import SearchIcon from '@material-ui/icons/Search';
 class Header extends Component{
     render(){
         return(
-            <Navbar className="categoriesBar" expand="lg">
+            <Navbar className="b-b-2gry p-0" expand="lg">
                 <NavDropdown className="dropdownTitle" title="ALL CATEGORIES" id="basic-nav-dropdown">
                     <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                     <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
