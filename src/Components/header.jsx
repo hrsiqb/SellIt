@@ -71,6 +71,9 @@ class Header extends Component {
                                 <NotificationsNoneIcon />
                             </IconButton>
                             <Avatar className="mr-4" alt="Remy Sharp" src={this.state.photoURL} />
+                            <Button className="mr-3 b-2blk f-20 ol-n bs-n" variant="outlined" color="primary">
+                                <Link className="n-l f-b" to="/SellIt/post">+SELL</Link>
+                            </Button>
                         </React.Fragment>)
                         : (
                             <React.Fragment>
@@ -78,9 +81,9 @@ class Header extends Component {
                                     <Button className="f-b fc-blk ol-n pr-3 pl-3" onClick={() => this.openDialog('login')}>Login</Button>
                                     <Button className="f-b fc-blk ol-n pl-3 pr-3" onClick={() => this.openDialog('register')}>SignUp</Button>
                                 </ButtonGroup>
+                                <Button className="mr-3 b-2blk f-20 ol-n bs-n f-b" onClick={() => this.openDialog('login')} variant="outlined">+SELL</Button>
                             </React.Fragment>
                         )}
-                    <Button className="mr-3 b-2blk f-20 ol-n bs-n" variant="outlined" color="primary"><b><Link className="n-l" to="/SellIt/post">+SELL</Link></b></Button>
                     <LoginDialog onClose={() => this.closeDialog()} open={this.state.openLoginDialog} />
                     <RegisterDialog onClose={() => this.closeDialog()} open={this.state.openRegisterDialog} />
                     {/* </Nav> */}

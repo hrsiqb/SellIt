@@ -41,7 +41,7 @@ class LoginDialog extends Component {
     console.log(this.state)
   }
   handleClickShowPassword = () => {
-    this.setState({showPassword: !this.state.showPassword})
+    this.setState({ showPassword: !this.state.showPassword })
   }
   render() {
     return (
@@ -52,16 +52,16 @@ class LoginDialog extends Component {
             <hr className="bt-g" />
 
             <Grid className="mb-4" container spacing={1} alignItems="flex-end">
-            {/* Email */}
-            <Grid className="mb-2" container spacing={1} alignItems="flex-end">
-              <Grid item>
-                <EmailIcon />
+              {/* Email */}
+              <Grid className="mb-2" container spacing={1} alignItems="flex-end">
+                <Grid item>
+                  <EmailIcon />
+                </Grid>
+                <Grid item className="w-85">
+                  <TextField onChange={this.handleChange('email')} fullWidth={true} label="Email" />
+                </Grid>
               </Grid>
-              <Grid item className="w-85">
-                <TextField onChange={this.handleChange('email')} fullWidth={true} label="Email" />
-              </Grid>
-            </Grid>
-            {/* Password */}
+              {/* Password */}
               <Grid item>
                 <VpnKey fontSize="small" />
               </Grid>
@@ -74,7 +74,7 @@ class LoginDialog extends Component {
                         onClick={this.handleClickShowPassword}
                       // onMouseDown={handleMouseDownPassword}
                       >
-                       {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                        {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>,
                   }}
@@ -116,7 +116,7 @@ class RegisterDialog extends Component {
     console.log(this.state)
   }
   handleClickShowPassword = () => {
-    this.setState({showPassword: !this.state.showPassword})
+    this.setState({ showPassword: !this.state.showPassword })
   }
   render() {
     return (
@@ -127,34 +127,28 @@ class RegisterDialog extends Component {
             <hr className="bt-g" />
 
             {/* Name */}
-            <Grid className="mb-2" container spacing={1} alignItems="flex-end">
+            <Grid className="mb-4" container spacing={1} alignItems="flex-end">
               <Grid item>
                 <Person />
               </Grid>
               <Grid item className="w-85">
                 <TextField onChange={this.handleChange('name')} fullWidth={true} label="Name" />
               </Grid>
-            </Grid>
-            {/* Email */}
-            <Grid className="mb-2" container spacing={1} alignItems="flex-end">
+              {/* Email */}
               <Grid item>
                 <EmailIcon />
               </Grid>
               <Grid item className="w-85">
                 <TextField onChange={this.handleChange('email')} fullWidth={true} label="Email" />
               </Grid>
-            </Grid>
-            {/* Phone */}
-            <Grid className="mb-2" container spacing={1} alignItems="flex-end">
+              {/* Phone */}
               <Grid item>
                 <PhoneIcon fontSize="small" />
               </Grid>
               <Grid item className="w-85">
                 <TextField onChange={this.handleChange('phone')} fullWidth={true} label="Phone" />
               </Grid>
-            </Grid>
-            {/* Password */}
-            <Grid className="mb-2" container spacing={1} alignItems="flex-end">
+              {/* Password */}
               <Grid item>
                 <VpnKey />
               </Grid>
@@ -167,7 +161,7 @@ class RegisterDialog extends Component {
                         onClick={this.handleClickShowPassword}
                       // onMouseDown={handleMouseDownPassword}
                       >
-                       {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                        {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>,
                   }}

@@ -44,7 +44,9 @@ const loginWithFacebook = () => {
       // errorHandler(error)
     });
 }
-
+const signUpWithEmail = (data) => {
+  
+}
 const getLoginDetails = (res, rej) => {
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
@@ -56,12 +58,8 @@ const getLoginDetails = (res, rej) => {
         uId: user.uid,
         isLoggedIn: true
       })
-      // var displayName = user.displayName;
-      // var email = user.email;
       // var emailVerified = user.emailVerified;
-      // var photoURL = user.photoURL;
       // var isAnonymous = user.isAnonymous;
-      // var uId = user.uid;
       // var providerData = user.providerData;
     }
     else {

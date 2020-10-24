@@ -27,14 +27,14 @@ class ItemCard extends Component {
                         <CardMedia className="itemCard-media">
                             <Carousel>{image}</Carousel>
                         </CardMedia>
-                        <CardContent className="itemCard-content">
-                            <p className="f-20 f-b mb-0">{`Rs ${formatPrice}`}</p>
-                            <p className="f-14 f-b5 mb-0 f-cg t-of-el">{title}</p>
+                        <div className="itemCard-content">
+                            <p className="f-20 f-b mb-0 ta-s">{`Rs ${formatPrice}`}</p>
+                            <p className="f-14 f-b5 mb-0 f-cg t-of-el ta-s">{title}</p>
                             <div className="itemCard-location-date">
                                 <span className="f-10 f-b5 f-uc f-cg mb-0">{location}</span>
                                 <span className="f-10 f-b5 f-uc f-cg mb-0">{createdAt}</span>
                             </div>
-                        </CardContent>
+                        </div>
                     </CardActionArea>
                 </Card>
             </Link>
