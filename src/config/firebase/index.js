@@ -44,8 +44,32 @@ const loginWithFacebook = () => {
       // errorHandler(error)
     });
 }
-const signUpWithEmail = (data) => {
-  
+const signUpWithEmail = (res, rej, data) => {
+  firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
+    .then((result) => {
+      res(result)
+    })
+    .catch(function (error) {
+      // Handle Errors here.
+      rej(error)
+    });
+}
+const insertUserData = (res, rej, isNewUser, data) => {
+  if (isNewUser) {
+    if(data.imageFile){
+      firebase.storage().ref().child(`images/userMedia/${data.uId}/${data.imageFile.name}`).put(data.imageFile)
+      .snapshot.ref.getDownloadURL()
+      .then((url) => console.log(url))
+      // .then((result) => console.log(result))
+    }
+    firebase.database().ref(`Users/${data.uId}`).set(data)
+      .then((result) => {
+        res(result)
+      })
+      .catch(function (error) {
+        rej(error)
+      })
+  }
 }
 const getLoginDetails = (res, rej) => {
   firebase.auth().onAuthStateChanged((user) => {
@@ -64,9 +88,18 @@ const getLoginDetails = (res, rej) => {
     }
     else {
       // User is signed out.
-      rej (false)
+      rej(false)
     }
   });
+}
+function logout() {
+  firebase.auth().signOut()
+    .then((result) => {
+      console.log('logout success')
+    })
+    .catch((error) => {
+
+    })
 }
 var insertAddData = (data) => {
   firebase.database().ref(`All Ads`).push(data[0])
@@ -164,4 +197,7 @@ export {
   getUserData,
   getLoginDetails,
   loginWithFacebook,
+  signUpWithEmail,
+  insertUserData,
+  logout
 }

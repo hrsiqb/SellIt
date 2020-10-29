@@ -12,16 +12,10 @@ export default class Post extends Component {
             data: dataObj,
         }
     }
-
+    handleChange = (e) => {
+        console.log(e.target.files[0])
+    }
     render() {
-        insertAddData(this.state.data)
-        // let timeOut = setTimeout( ()=> {
-        //     this.setState({
-        //         data: "Document loaded successfully"
-        //     })
-        // }, 3000)
-
-        let data = this.state.data.map((data) => data ? <ItemCard data={data} /> : <ItemCardSkeleton />)
         return (
             <div className="root">
                 <h1 className="flexCenter">POST</h1>

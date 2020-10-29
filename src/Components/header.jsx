@@ -4,8 +4,8 @@ import { Navbar, Nav, NavDropdown, Form, FormControl } from 'react-bootstrap'
 import noUser from '../noUser'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom"
-import { loginWithFacebook, getLoginDetails } from '../config/firebase'
-import { LoginDialog, RegisterDialog } from './dialog'
+import { getLoginDetails, logout } from '../config/firebase'
+import { LoginDialogComp, RegisterDialogComp } from './dialog'
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import IconButton from '@material-ui/core/IconButton';
@@ -13,6 +13,8 @@ import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import Avatar from '@material-ui/core/Avatar';
 import SearchIcon from '@material-ui/icons/Search';
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-bootstrap/Dropdown'
 
 class Header extends Component {
     constructor() {
@@ -22,6 +24,19 @@ class Header extends Component {
             openRegisterDialog: false,
             isLoggedIn: false
         }
+    }
+    componentDidMount() {
+        this.checkLoginStatus()
+    }
+    checkLoginStatus = () => {
+        new Promise((res, rej) => getLoginDetails(res, rej))
+            .then((data) => {
+                if (!data.photoURL) data.photoURL = noUser.userPrimary
+                this.setState(data)
+            })
+            .catch((status) => {
+                this.setState({isLoggedIn: false})
+            })
     }
     openDialog(type) {
         switch (type) {
@@ -35,22 +50,13 @@ class Header extends Component {
                 break;
         }
     }
-    closeDialog() {
-        console.log("this.props.onClose")
+    closeDialog(callCheck = false) {
         this.state.openRegisterDialog = false
         this.state.openLoginDialog = false
-        this.setState(this.state)
+        if(callCheck) this.checkLoginStatus()
+        else this.setState(this.state)
     }
     render() {
-        let promise = new Promise((res, rej) => getLoginDetails(res, rej))
-            .then((data) => {
-                if (!data.photoURL) data.photoURL = noUser.userPrimary
-                this.setState(data)
-                console.log(this.state)
-            })
-            .catch((status) => {
-                // this.setState({isLoggedIn: false})
-            })
         return (
             <Navbar sticky="top" bg="light" className="b-b-2gry" expand="lg">
                 <Navbar.Brand className="ml-3" style={{ fontSize: "30px" }}><b><Link className="n-l ol-n" to="/SellIt/">SellIt</Link></b></Navbar.Brand>
@@ -64,13 +70,43 @@ class Header extends Component {
                     </Button>
                     {this.state.isLoggedIn ? (
                         <React.Fragment>
-                            <IconButton className="btn ml-3" aria-label="chat">
+                            <IconButton className="btn ml-3 ol-n bs-n" aria-label="chat">
                                 <ChatBubbleOutlineIcon />
                             </IconButton>
-                            <IconButton className="btn mr-2" aria-label="notification">
+                            <IconButton className="btn mr-2 ol-n bs-n" aria-label="notification">
                                 <NotificationsNoneIcon />
                             </IconButton>
-                            <Avatar className="mr-4" alt="Remy Sharp" src={this.state.photoURL} />
+                            {/* <DropdownButton
+                                menuAlign="right"
+                                title="Dropdown right"
+                                id="dropdown-menu-align-right"
+                            >
+                                <Dropdown.Item eventKey="1">Action</Dropdown.Item>
+                                <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
+                                <Dropdown.Item eventKey="3">Something else here</Dropdown.Item>
+                                <Dropdown.Divider />
+                                <Dropdown.Item eventKey="4">Separated link</Dropdown.Item>
+                            </DropdownButton>
+                            <DropdownButton
+                                menuAlign="right"
+                                title="Dropdown right"
+                                id="dropdown-menu-align-right"
+                            >
+                                <Dropdown.Item>
+                                    <div className="card" style={{ width: "300px" }}>
+                                        <div className="card-body" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                                            <img src={this.state.photoURL} id="userPhoto" alt="User Photo" className="card-img-top" />
+                                            <h3 className="card-title" id="currentName">username</h3>
+                                            <p className="card-text" id="currentEmail">email</p>
+                                        </div>
+                            <Link to="/"  style="display: flex; justify-content: center;" class="card-link btn btn-primary ml-2 mr-2">Logout</Link>
+                            </div></Dropdown.Item>
+                            <NavDropdown.Item href="#action/3.2">Another action Another action</NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+                            </DropdownButton> */}
+                            <Avatar className="mr-4 h-p" alt="user" onClick={logout()} src={this.state.photoURL} />
                             <Button className="mr-3 b-2blk f-20 ol-n bs-n" variant="outlined" color="primary">
                                 <Link className="n-l f-b" to="/SellIt/post">+SELL</Link>
                             </Button>
@@ -84,11 +120,11 @@ class Header extends Component {
                                 <Button className="mr-3 b-2blk f-20 ol-n bs-n f-b" onClick={() => this.openDialog('login')} variant="outlined">+SELL</Button>
                             </React.Fragment>
                         )}
-                    <LoginDialog onClose={() => this.closeDialog()} open={this.state.openLoginDialog} />
-                    <RegisterDialog onClose={() => this.closeDialog()} open={this.state.openRegisterDialog} />
+                    <LoginDialogComp onClose={(check) => this.closeDialog(check)} open={this.state.openLoginDialog} />
+                    <RegisterDialogComp onClose={(check) => this.closeDialog(check)} open={this.state.openRegisterDialog} />
                     {/* </Nav> */}
                 </div>
-            </Navbar>
+            </Navbar >
         )
     }
 }
