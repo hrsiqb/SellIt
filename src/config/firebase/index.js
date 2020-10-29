@@ -20,20 +20,20 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const storage = firebase.storage()
 
-const loginWithFacebook = () => {
+const loginWithFacebook = (res, rej) => {
   var provider = new firebase.auth.FacebookAuthProvider();
   firebase.auth().signInWithPopup(provider)
-    .then(function (result) {
+    .then((result) => {
+      res(result)
       if (result.credential) {
         // This gives you a Facebook Access Token. You can use it to access the Facebook API.
         var token = result.credential.accessToken;
       }
-      console.log("result=>", result)
       // The signed-in user info.
       var user = result.user;
     })
-    .catch(function (error) {
-      console.log("error=>", error.message)
+    .catch((error) => {
+      rej(error)
       // Handle Errors here.
       var errorCode = error.code;
       var errorMessage = error.message;
@@ -42,6 +42,16 @@ const loginWithFacebook = () => {
       // The firebase.auth.AuthCredential type that was used.
       var credential = error.credential;
       // errorHandler(error)
+    });
+}
+const loginWithEmail = (res, rej, data) => {
+  firebase.auth().signInWithEmailAndPassword(data.email, data.password)
+    .then((result) => {
+      res(result)
+    })
+    .catch(function (error) {
+      // Handle Errors here.
+      rej(error)
     });
 }
 const signUpWithEmail = (res, rej, data) => {
@@ -56,49 +66,79 @@ const signUpWithEmail = (res, rej, data) => {
 }
 const insertUserData = (res, rej, isNewUser, data) => {
   if (isNewUser) {
-    if(data.imageFile){
-      firebase.storage().ref().child(`images/userMedia/${data.uId}/${data.imageFile.name}`).put(data.imageFile)
-      .snapshot.ref.getDownloadURL()
-      .then((url) => console.log(url))
-      // .then((result) => console.log(result))
+    if (data.imageFile) {
+      firebase.storage().ref().child(`images/userMedia/${data.uId}`).put(data.imageFile)
+        .then((snapshot) => {
+          snapshot.ref.getDownloadURL()
+            .then((url) => {
+              data.imageFile = url
+              firebase.database().ref(`Users/${data.uId}`).set(data)
+                .then((result) => {
+                  res(result)
+                })
+                .catch(function (error) {
+                  rej(error)
+                })
+            })
+        })
     }
-    firebase.database().ref(`Users/${data.uId}`).set(data)
-      .then((result) => {
-        res(result)
-      })
-      .catch(function (error) {
-        rej(error)
-      })
+    else {
+      firebase.database().ref(`Users/${data.uId}`).set(data)
+        .then((result) => {
+          res(result)
+        })
+        .catch(function (error) {
+          rej(error)
+        })
+    }
   }
 }
 const getLoginDetails = (res, rej) => {
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      // User is signed in.
-      res({
-        displayName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        uId: user.uid,
-        isLoggedIn: true
-      })
-      // var emailVerified = user.emailVerified;
-      // var isAnonymous = user.isAnonymous;
-      // var providerData = user.providerData;
+  var run = true//flag to indicate getLoginDetails() has been called
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (run) {//run only if the getLoginDetails() has been called
+      run = false
+      if (user) {
+        // User is signed in.
+        let provider = user.providerData[0].providerId
+        if (provider !== 'password') {
+          res({
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            uId: user.uid,
+            isLoggedIn: true
+          })
+        }
+        else {
+          new Promise((res, rej) => getUserData(res, rej, user.uid))
+            .then((data) => {
+              res({
+                displayName: data.name,
+                email: user.email,
+                photoURL: data.imageFile,
+                uId: user.uid,
+                isLoggedIn: true
+              })
+            })
+        }
+        // var emailVerified = user.emailVerified;
+        // var isAnonymous = user.isAnonymous;
+      }
+      else {
+        // User is signed out.
+        rej(false)
+      }
     }
-    else {
-      // User is signed out.
-      rej(false)
-    }
-  });
+  })
 }
-function logout() {
+function logout(res, rej) {
   firebase.auth().signOut()
     .then((result) => {
-      console.log('logout success')
+      res(result)
     })
     .catch((error) => {
-
+      rej(error)
     })
 }
 var insertAddData = (data) => {
@@ -198,6 +238,7 @@ export {
   getLoginDetails,
   loginWithFacebook,
   signUpWithEmail,
+  loginWithEmail,
   insertUserData,
   logout
 }

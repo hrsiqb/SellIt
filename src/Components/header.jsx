@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import { Navbar, Nav, NavDropdown, Form, FormControl } from 'react-bootstrap'
 import noUser from '../noUser'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,6 +12,9 @@ import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import Avatar from '@material-ui/core/Avatar';
 import SearchIcon from '@material-ui/icons/Search';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { withSnackbar } from 'notistack';
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 
@@ -22,21 +24,42 @@ class Header extends Component {
         this.state = {
             openLoginDialog: false,
             openRegisterDialog: false,
-            isLoggedIn: false
+            isLoggedIn: false,
+            loading: false
         }
     }
     componentDidMount() {
+        this.setState({ loading: true })
         this.checkLoginStatus()
     }
     checkLoginStatus = () => {
         new Promise((res, rej) => getLoginDetails(res, rej))
             .then((data) => {
+                this.state.loading = false
                 if (!data.photoURL) data.photoURL = noUser.userPrimary
                 this.setState(data)
             })
             .catch((status) => {
-                this.setState({isLoggedIn: false})
+                this.setState({ isLoggedIn: false, loading: false })
             })
+    }
+    handleLogout = () => {
+        this.state.loading = true
+        new Promise((res, rej) => logout(res, rej))
+            .then((result) => {
+                this.setState({ isLoggedIn: false, loading: false })
+                this.showSnackBar('Logout successful', 'success')
+            })
+            .catch((error) => {
+                this.setState({ loading: false })
+                this.showSnackBar(error.message, 'danger')
+            })
+    }
+    showSnackBar = (msg, variant) => {
+        this.props.enqueueSnackbar(msg, {
+            variant,
+            autoHideDuration: 5000
+        });
     }
     openDialog(type) {
         switch (type) {
@@ -53,12 +76,15 @@ class Header extends Component {
     closeDialog(callCheck = false) {
         this.state.openRegisterDialog = false
         this.state.openLoginDialog = false
-        if(callCheck) this.checkLoginStatus()
+        if (callCheck) this.checkLoginStatus()
         else this.setState(this.state)
     }
     render() {
         return (
             <Navbar sticky="top" bg="light" className="b-b-2gry" expand="lg">
+                <Backdrop className='fc-w zInd-12' open={this.state.loading}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
                 <Navbar.Brand className="ml-3" style={{ fontSize: "30px" }}><b><Link className="n-l ol-n" to="/SellIt/">SellIt</Link></b></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <div id="basic-navbar-nav" className="d-c">
@@ -106,7 +132,7 @@ class Header extends Component {
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
                             </DropdownButton> */}
-                            <Avatar className="mr-4 h-p" alt="user" onClick={logout()} src={this.state.photoURL} />
+                            <Avatar className="mr-4 h-p" alt="user" onClick={this.handleLogout} src={this.state.photoURL} />
                             <Button className="mr-3 b-2blk f-20 ol-n bs-n" variant="outlined" color="primary">
                                 <Link className="n-l f-b" to="/SellIt/post">+SELL</Link>
                             </Button>
@@ -128,4 +154,4 @@ class Header extends Component {
         )
     }
 }
-export default Header;
+export default withSnackbar(Header);

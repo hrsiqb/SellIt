@@ -13,7 +13,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import EmailIcon from '@material-ui/icons/Email';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import { signUpWithEmail, insertUserData } from '../config/firebase'
+import { signUpWithEmail, insertUserData, loginWithEmail, loginWithFacebook } from '../config/firebase'
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { FaFacebookF, FaGooglePlusG } from 'react-icons/fa';
@@ -23,12 +23,53 @@ class LoginDialog extends Component {
   constructor() {
     super()
     this.state = {
-      name: '',
       email: '',
-      phone: '',
       password: '',
-      showPassword: false
+      showPassword: false,
+      loading: false,
+      emailError: false,
+      passwordError: false
     }
+  }
+  showSnackBar = (msg, variant) => {
+    this.props.enqueueSnackbar(msg, {
+      variant,
+      autoHideDuration: 5000
+    });
+  }
+  handleFacebookLogin = () => {
+    this.props.closeSnackbar()
+    this.setState({ loading: true, passwordError: false, emailError: false })
+    new Promise((res, rej) => loginWithFacebook(res, rej))
+      .then((result) => {
+        this.setState({ loading: false })
+        this.showSnackBar('Login successful', 'success')
+        this.props.onClose(true)
+      })
+      .catch((error) => {
+        this.setState({ loading: false })
+        this.showSnackBar(error.message, 'error')
+        if (error.message.includes('email') || error.message.includes('no user')) this.state.emailError = true
+        if (error.message.includes('password')) this.state.passwordError = true
+        this.setState(this.state)
+      })
+  }
+  handleLogin = () => {
+    this.props.closeSnackbar()
+    this.setState({ loading: true, passwordError: false, emailError: false })
+    new Promise((res, rej) => loginWithEmail(res, rej, { email: this.state.email, password: this.state.password }))
+      .then((result) => {
+        this.setState({ loading: false })
+        this.showSnackBar('Login successful', 'success')
+        this.props.onClose(true)
+      })
+      .catch((error) => {
+        this.setState({ loading: false })
+        this.showSnackBar(error.message, 'error')
+        if (error.message.includes('email') || error.message.includes('no user')) this.state.emailError = true
+        if (error.message.includes('password')) this.state.passwordError = true
+        this.setState(this.state)
+      })
   }
   handleChange = (prop) => (event) => {
     this.state[prop] = event.target.value
@@ -39,6 +80,9 @@ class LoginDialog extends Component {
   render() {
     return (
       <Dialog onClose={this.props.onClose} aria-labelledby="simple-dialog-title" open={this.props.open}>
+        <Backdrop className='fc-w zInd-12' open={this.state.loading} >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <div style={{ maxWidth: "308px" }}>
           <List className="p-3 ta-c">
             <h3 className="ta-c mb-2 f-b">Login</h3>
@@ -50,16 +94,16 @@ class LoginDialog extends Component {
                 <Grid item>
                   <EmailIcon />
                 </Grid>
-                <Grid item className="w-40">
-                  <TextField onChange={this.handleChange('email')} fullWidth={true} label="Email" />
+                <Grid item className="w-85">
+                  <TextField error={this.state.emailError} onChange={this.handleChange('email')} fullWidth={true} label="Email" />
                 </Grid>
               </Grid>
               {/* Password */}
               <Grid item>
                 <VpnKey fontSize="small" />
               </Grid>
-              <Grid item className="w-40">
-                <TextField type={this.state.showPassword ? 'text' : 'password'} onChange={this.handleChange('password')} fullWidth={true} label="Password"
+              <Grid item className="w-87">
+                <TextField error={this.state.passwordError} type={this.state.showPassword ? 'text' : 'password'} onChange={this.handleChange('password')} fullWidth={true} label="Password"
                   InputProps={{
                     endAdornment: <InputAdornment position="end">
                       <IconButton className="ol-n bs-n"
@@ -73,13 +117,15 @@ class LoginDialog extends Component {
                 />
               </Grid>
             </Grid>
-            <Button variant="outlined" className="fc-blk ol-n b-2blk f-b mt-6 mb-6 f-16 f-b w-100 h-42">Login</Button>
+            <Button variant="outlined" className="fc-blk ol-n b-2blk f-b mt-6 mb-6 f-16 f-b w-100 h-42"
+              onClick={this.handleLogin}>
+              Login</Button>
             <div className=" ta-c mt-6 mb-6">
               <hr className="d-il-b w-38 m-1 bt-g" />
               <p className="d-il-b m-0 mr-2 ml-2 f-b5 fc-g">OR</p>
               <hr className="d-il-b w-38 m-1 bt-g" />
             </div>
-            <Button variant="outlined" className="facebookColor h-42 w-100 ol-n mt-6 mb-6 fc-w f-b">
+            <Button variant="outlined" onClick={this.handleFacebookLogin} className="facebookColor h-42 w-100 ol-n mt-6 mb-6 fc-w f-b">
               <FaFacebookF className="f-22 mr-3" />Continue With Facebook
             </Button>
             <Button variant="outlined" className="googleColor h-42 w-100 ol-n mt-6 mb-6 fc-w f-b">
@@ -139,7 +185,7 @@ class RegisterDialog extends Component {
       autoHideDuration: 5000
     });
   }
-  signUp = () => {
+  handleSignUp = () => {
     this.props.closeSnackbar()
     let error = false
     /*=============================== Validate form data =============================*/
@@ -184,11 +230,10 @@ class RegisterDialog extends Component {
       this.setState(this.state)
       new Promise((resolve, reject) => signUpWithEmail(resolve, reject, this.state.userInfo))
         .then((data) => {
-          console.log(data)
           this.state.userInfo.uId = data.user.uid
-          let memberSince = data.user.metadata.creationTime.split(' ').slice(1,4).join(' ')
-          const {email, imageFile, name, uId, phone} = this.state.userInfo
-          let userData = {email, imageFile, name, uId, phone, memberSince}
+          let memberSince = data.user.metadata.creationTime.split(' ').slice(1, 4).join(' ')
+          const { email, imageFile, name, uId, phone } = this.state.userInfo
+          let userData = { email, imageFile, name, uId, phone, memberSince }
           new Promise((res, rej) => insertUserData(res, rej, data.additionalUserInfo.isNewUser, userData))
             .then((result) => {
               this.state.loading.open = false
@@ -212,7 +257,7 @@ class RegisterDialog extends Component {
           this.setState(this.state)
         })
     }
-    this.setState(this.state)
+    // this.setState(this.state)
   }
   render() {
     var border = 'w-40 h-70 d-fr ai-fe b-b-1gry p-1 mb-1'
@@ -295,16 +340,16 @@ class RegisterDialog extends Component {
             {/* Buttons */}
             <Button variant="outlined"
               className="fc-blk ol-n b-2blk f-b mt-6 mb-6 f-16 f-b w-65 h-42"
-              onClick={this.signUp}
+              onClick={this.handleSignUp}
             >
-              Login</Button>
+              SignUp</Button>
             <div className=" ta-c mt-6 mb-6">
               <hr className="d-il-b w-38 m-1 bt-g" />
               <p className="d-il-b m-0 mr-2 ml-2 f-b5 fc-g">OR</p>
               <hr className="d-il-b w-38 m-1 bt-g" />
             </div>
             <div className="d-fr f-wr jc-sb">
-              <Button variant="outlined" className="facebookColor h-42 w-49 ol-n mt-6 mb-6 fc-w f-b">
+              <Button variant="outlined" onClick={this.handleFacebookLogin} className="facebookColor h-42 w-49 ol-n mt-6 mb-6 fc-w f-b">
                 <FaFacebookF className="f-22 mr-2" />Continue With Facebook
             </Button>
               <Button variant="outlined" className="googleColor h-42 w-49 ol-n mt-6 mb-6 fc-w f-b">
