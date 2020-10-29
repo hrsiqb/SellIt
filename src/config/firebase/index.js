@@ -20,28 +20,25 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const storage = firebase.storage()
 
+function loginWithGoogle(res, rej) {
+  // Google Auth Config
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider)
+    .then(function (result) {
+      res(result)
+    })
+    .catch(function (error) {
+      rej(error)
+    });
+}
 const loginWithFacebook = (res, rej) => {
   var provider = new firebase.auth.FacebookAuthProvider();
   firebase.auth().signInWithPopup(provider)
     .then((result) => {
       res(result)
-      if (result.credential) {
-        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-        var token = result.credential.accessToken;
-      }
-      // The signed-in user info.
-      var user = result.user;
     })
     .catch((error) => {
       rej(error)
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // errorHandler(error)
     });
 }
 const loginWithEmail = (res, rej, data) => {
@@ -64,33 +61,31 @@ const signUpWithEmail = (res, rej, data) => {
       rej(error)
     });
 }
-const insertUserData = (res, rej, isNewUser, data) => {
-  if (isNewUser) {
-    if (data.imageFile) {
-      firebase.storage().ref().child(`images/userMedia/${data.uId}`).put(data.imageFile)
-        .then((snapshot) => {
-          snapshot.ref.getDownloadURL()
-            .then((url) => {
-              data.imageFile = url
-              firebase.database().ref(`Users/${data.uId}`).set(data)
-                .then((result) => {
-                  res(result)
-                })
-                .catch(function (error) {
-                  rej(error)
-                })
-            })
-        })
-    }
-    else {
-      firebase.database().ref(`Users/${data.uId}`).set(data)
-        .then((result) => {
-          res(result)
-        })
-        .catch(function (error) {
-          rej(error)
-        })
-    }
+const insertUserData = (res, rej, provider, data) => {
+  if (data.imageFile && provider === 'password') {
+    firebase.storage().ref().child(`images/userMedia/${data.uId}`).put(data.imageFile)
+      .then((snapshot) => {
+        snapshot.ref.getDownloadURL()
+          .then((url) => {
+            data.imageFile = url
+            firebase.database().ref(`Users/${data.uId}`).set(data)
+              .then((result) => {
+                res(result)
+              })
+              .catch(function (error) {
+                rej(error)
+              })
+          })
+      })
+  }
+  else {
+    firebase.database().ref(`Users/${data.uId}`).set(data)
+      .then((result) => {
+        res(result)
+      })
+      .catch(function (error) {
+        rej(error)
+      })
   }
 }
 const getLoginDetails = (res, rej) => {
@@ -227,7 +222,6 @@ const getUserData = (resolve, reject, uId) => {
       resolve(returnedData.val())
     })
 }
-// .startAt(iId).endAt(iId)
 export {
   storage,
   firebase as default,
@@ -237,6 +231,7 @@ export {
   getUserData,
   getLoginDetails,
   loginWithFacebook,
+  loginWithGoogle,
   signUpWithEmail,
   loginWithEmail,
   insertUserData,

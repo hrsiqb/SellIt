@@ -13,7 +13,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import EmailIcon from '@material-ui/icons/Email';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import { signUpWithEmail, insertUserData, loginWithEmail, loginWithFacebook } from '../config/firebase'
+import { signUpWithEmail, insertUserData, loginWithEmail, loginWithFacebook, loginWithGoogle } from '../config/firebase'
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { FaFacebookF, FaGooglePlusG } from 'react-icons/fa';
@@ -39,12 +39,40 @@ class LoginDialog extends Component {
   }
   handleFacebookLogin = () => {
     this.props.closeSnackbar()
-    this.setState({ loading: true, passwordError: false, emailError: false })
+    this.setState({ loading: true })
     new Promise((res, rej) => loginWithFacebook(res, rej))
-      .then((result) => {
-        this.setState({ loading: false })
-        this.showSnackBar('Login successful', 'success')
-        this.props.onClose(true)
+      .then((data) => {
+        this.state.uId = data.user.uid
+        let memberSince = data.user.metadata.creationTime.split(' ').slice(1, 4).join(' ')
+        let userData = {
+          email: data.user.email,
+          imageFile: data.user.photoURL,
+          name: data.user.displayName,
+          uId: data.user.uid,
+          phone: '',
+          memberSince
+        }
+        if (data.additionalUserInfo.isNewUser) {
+          new Promise((res, rej) => insertUserData(res, rej, data.additionalUserInfo.providerId, userData))
+            .then(() => {
+              this.setState({ loading: false })
+              this.showSnackBar('Facebook Login Successful', 'success')
+
+              this.props.onClose(true)
+            })
+            .catch((error) => {
+              this.setState({ loading: false })
+              this.showSnackBar(error.message, 'error')
+
+              this.props.onClose(true)
+            })
+        }
+        else {
+          this.setState({ loading: false })
+          this.showSnackBar('Facebook Login Successful', 'success')
+
+          this.props.onClose(true)
+        }
       })
       .catch((error) => {
         this.setState({ loading: false })
@@ -54,6 +82,48 @@ class LoginDialog extends Component {
         this.setState(this.state)
       })
   }
+  handleGoogleLogin = () => {
+    this.props.closeSnackbar()
+    this.setState({ loading: true })
+    new Promise((res, rej) => loginWithGoogle(res, rej))
+      .then((data) => {
+        this.state.uId = data.user.uid
+        let memberSince = data.user.metadata.creationTime.split(' ').slice(1, 4).join(' ')
+        let userData = {
+          email: data.user.email,
+          imageFile: data.user.photoURL,
+          name: data.user.displayName,
+          uId: data.user.uid,
+          phone: '',
+          memberSince
+        }
+        if (data.additionalUserInfo.isNewUser) {
+          new Promise((res, rej) => insertUserData(res, rej, data.additionalUserInfo.providerId, userData))
+            .then(() => {
+              this.setState({ loading: false })
+              this.showSnackBar('Google Login Successful', 'success')
+
+              this.props.onClose(true)
+            })
+            .catch((error) => {
+              this.setState({ loading: false })
+              this.showSnackBar(error.message, 'error')
+
+              this.props.onClose(true)
+            })
+        }
+        else {
+          this.setState({ loading: false })
+          this.showSnackBar('Google Login Successful', 'success')
+
+          this.props.onClose(true)
+        }
+      })
+      .catch((error) => {
+        this.setState({ loading: false })
+        this.showSnackBar(error.message, 'error')
+      })
+  }
   handleLogin = () => {
     this.props.closeSnackbar()
     this.setState({ loading: true, passwordError: false, emailError: false })
@@ -61,14 +131,12 @@ class LoginDialog extends Component {
       .then((result) => {
         this.setState({ loading: false })
         this.showSnackBar('Login successful', 'success')
+
         this.props.onClose(true)
       })
       .catch((error) => {
         this.setState({ loading: false })
         this.showSnackBar(error.message, 'error')
-        if (error.message.includes('email') || error.message.includes('no user')) this.state.emailError = true
-        if (error.message.includes('password')) this.state.passwordError = true
-        this.setState(this.state)
       })
   }
   handleChange = (prop) => (event) => {
@@ -128,7 +196,7 @@ class LoginDialog extends Component {
             <Button variant="outlined" onClick={this.handleFacebookLogin} className="facebookColor h-42 w-100 ol-n mt-6 mb-6 fc-w f-b">
               <FaFacebookF className="f-22 mr-3" />Continue With Facebook
             </Button>
-            <Button variant="outlined" className="googleColor h-42 w-100 ol-n mt-6 mb-6 fc-w f-b">
+            <Button variant="outlined" onClick={this.handleGoogleLogin} className="googleColor h-42 w-100 ol-n mt-6 mb-6 fc-w f-b">
               <FaGooglePlusG className="f-30 mr-3" />Continue With Google
             </Button>
           </List>
@@ -185,6 +253,93 @@ class RegisterDialog extends Component {
       autoHideDuration: 5000
     });
   }
+  handleFacebookLogin = () => {
+    this.props.closeSnackbar()
+    this.setState({ loading: { open: true } })
+    new Promise((res, rej) => loginWithFacebook(res, rej))
+      .then((data) => {
+        this.state.userInfo.uId = data.user.uid
+        let memberSince = data.user.metadata.creationTime.split(' ').slice(1, 4).join(' ')
+        let userData = {
+          email: data.user.email,
+          imageFile: data.user.photoURL,
+          name: data.user.displayName,
+          uId: data.user.uid,
+          phone: '',
+          memberSince
+        }
+        if (data.additionalUserInfo.isNewUser) {
+          new Promise((res, rej) => insertUserData(res, rej, data.additionalUserInfo.providerId, userData))
+            .then(() => {
+              this.setState({ loading: { open: false } })
+              this.showSnackBar('Facebook Login Successful', 'success')
+
+              this.props.onClose(true)
+            })
+            .catch((error) => {
+              this.setState({ loading: { open: false } })
+              this.showSnackBar(error.message, 'error')
+
+              this.props.onClose(true)
+            })
+        }
+        else {
+          this.setState({ loading: { open: false } })
+          this.showSnackBar('Facebook Login Successful', 'success')
+
+          this.props.onClose(true)
+        }
+      })
+      .catch((error) => {
+        this.setState({ loading: { open: false } })
+        this.showSnackBar(error.message, 'error')
+        if (error.message.includes('email') || error.message.includes('no user')) this.state.error.email = true
+        if (error.message.includes('password')) this.state.error.password = true
+        this.setState(this.state)
+      })
+  }
+  handleGoogleLogin = () => {
+    this.props.closeSnackbar()
+    this.setState({ loading: { open: true } })
+    new Promise((res, rej) => loginWithGoogle(res, rej))
+      .then((data) => {
+        this.state.userInfo.uId = data.user.uid
+        let memberSince = data.user.metadata.creationTime.split(' ').slice(1, 4).join(' ')
+        let userData = {
+          email: data.user.email,
+          imageFile: data.user.photoURL,
+          name: data.user.displayName,
+          uId: data.user.uid,
+          phone: '',
+          memberSince
+        }
+        if (data.additionalUserInfo.isNewUser) {
+          new Promise((res, rej) => insertUserData(res, rej, data.additionalUserInfo.providerId, userData))
+            .then(() => {
+              this.setState({ loading: { open: false } })
+              this.showSnackBar('Google Login Successful', 'success')
+
+              this.props.onClose(true)
+            })
+            .catch((error) => {
+              this.setState({ loading: { open: false } })
+              this.showSnackBar(error.message, 'error')
+
+              this.props.onClose(true)
+            })
+        }
+        else {
+          this.setState({ loading: { open: false } })
+          this.showSnackBar('Google Login Successful', 'success')
+
+          this.props.onClose(true)
+        }
+      })
+      .catch((error) => {
+        this.setState({ loading: { open: false } })
+        this.showSnackBar(error.message, 'error')
+      })
+  }
   handleSignUp = () => {
     this.props.closeSnackbar()
     let error = false
@@ -234,19 +389,23 @@ class RegisterDialog extends Component {
           let memberSince = data.user.metadata.creationTime.split(' ').slice(1, 4).join(' ')
           const { email, imageFile, name, uId, phone } = this.state.userInfo
           let userData = { email, imageFile, name, uId, phone, memberSince }
-          new Promise((res, rej) => insertUserData(res, rej, data.additionalUserInfo.isNewUser, userData))
-            .then((result) => {
-              this.state.loading.open = false
-              this.showSnackBar('SignUp Successful', 'success')
-              this.setState(this.state)
-              this.props.onClose(true)
-            })
-            .catch((error) => {
-              this.state.loading.open = false
-              this.showSnackBar(error.message, 'error')
-              this.setState(this.state)
-              this.props.onClose(true)
-            })
+          if (data.additionalUserInfo.isNewUser) {
+            new Promise((res, rej) => insertUserData(res, rej, data.additionalUserInfo.providerId, userData))
+              .then((result) => {
+                this.state.loading.open = false
+                this.showSnackBar('SignUp Successful', 'success')
+                this.setState(this.state)
+
+                this.props.onClose(true)
+              })
+              .catch((error) => {
+                this.state.loading.open = false
+                this.showSnackBar(error.message, 'error')
+                this.setState(this.state)
+
+                this.props.onClose(true)
+              })
+          }
         })
         .catch((error) => {
           if (error.message.includes('email')) this.state.error.email = true
@@ -352,7 +511,7 @@ class RegisterDialog extends Component {
               <Button variant="outlined" onClick={this.handleFacebookLogin} className="facebookColor h-42 w-49 ol-n mt-6 mb-6 fc-w f-b">
                 <FaFacebookF className="f-22 mr-2" />Continue With Facebook
             </Button>
-              <Button variant="outlined" className="googleColor h-42 w-49 ol-n mt-6 mb-6 fc-w f-b">
+              <Button variant="outlined" onClick={this.handleGoogleLogin} className="googleColor h-42 w-49 ol-n mt-6 mb-6 fc-w f-b">
                 <FaGooglePlusG className="f-30 mr-2" />Continue With Google
             </Button>
             </div>

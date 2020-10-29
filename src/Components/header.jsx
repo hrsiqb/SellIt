@@ -33,6 +33,7 @@ class Header extends Component {
         this.checkLoginStatus()
     }
     checkLoginStatus = () => {
+        console.log('getLogin')
         new Promise((res, rej) => getLoginDetails(res, rej))
             .then((data) => {
                 this.state.loading = false
