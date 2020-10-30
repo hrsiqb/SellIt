@@ -22,6 +22,10 @@
     background-color: black !important;
 }
 
+.bc-trn {
+    background-color: transparent !important;
+}
+
 .br-1blk {
     border-right: 1px solid black !important;
 }
@@ -330,6 +334,12 @@
 
 .ai-fe {
     align-items: flex-end;
+}
+.b-n{
+    border: none !important;
+}
+.d-n-a::after{
+    display: none !important;
 }
 .sellerAvatar {
     width: 60px !important;

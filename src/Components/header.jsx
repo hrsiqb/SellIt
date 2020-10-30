@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom"
 import { getLoginDetails, logout } from '../config/firebase'
 import { LoginDialogComp, RegisterDialogComp } from './dialog'
+import ProfileCard from './profileCard'
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,8 +16,9 @@ import SearchIcon from '@material-ui/icons/Search';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withSnackbar } from 'notistack';
-import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
+import { FiLogOut } from 'react-icons/fi';
+import { BsFiles } from 'react-icons/bs';
 
 class Header extends Component {
     constructor() {
@@ -33,7 +35,6 @@ class Header extends Component {
         this.checkLoginStatus()
     }
     checkLoginStatus = () => {
-        console.log('getLogin')
         new Promise((res, rej) => getLoginDetails(res, rej))
             .then((data) => {
                 this.state.loading = false
@@ -103,10 +104,30 @@ class Header extends Component {
                             <IconButton className="btn mr-2 ol-n bs-n" aria-label="notification">
                                 <NotificationsNoneIcon />
                             </IconButton>
+
+                            <Dropdown alignRight>
+                                <Dropdown.Toggle className="d-n-a bc-trn p-0 b-n bs-n" id="user-dropdown" >
+                                    <Avatar className="mr-4" alt="user" src={this.state.photoURL} />
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu className="mt-1 p-3">
+                                    <Dropdown.Item className="p-0 pr-5 pb-2">
+                                        <section className="d-fr ai-c">
+                                            <Avatar className="sellerAvatar" alt="userAvatar" src={this.state.photoURL} />
+                                            <section className="ml-3">
+                                                <p className="f-22 f-b7 m-0">{this.state.displayName}</p>
+                                                <p className="text-secondary f-14 m-0">{this.state.email}</p>
+                                            </section>
+                                        </section>
+                                    </Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item className="p-2 pl-0"><BsFiles className="mr-3 f-22" />My Adds</Dropdown.Item>
+                                    <Dropdown.Item className="p-2 pl-0" onClick={this.handleLogout}><FiLogOut className="mr-3 f-22" />Logout</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
                             {/* <DropdownButton
-                                menuAlign="right"
-                                title="Dropdown right"
-                                id="dropdown-menu-align-right"
+                                menuAlign="left"
+                                title="Dropdown left"
+                                id="dropdown-menu-align-left"
                             >
                                 <Dropdown.Item eventKey="1">Action</Dropdown.Item>
                                 <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
@@ -125,15 +146,15 @@ class Header extends Component {
                                             <img src={this.state.photoURL} id="userPhoto" alt="User Photo" className="card-img-top" />
                                             <h3 className="card-title" id="currentName">username</h3>
                                             <p className="card-text" id="currentEmail">email</p>
-                                        </div>
-                            <Link to="/"  style="display: flex; justify-content: center;" class="card-link btn btn-primary ml-2 mr-2">Logout</Link>
-                            </div></Dropdown.Item>
+                                        </div> */}
+                            {/* <Link to="/"  style="display: flex; justify-content: center;" class="card-link btn btn-primary ml-2 mr-2">Logout</Link> */}
+                            {/* </div></Dropdown.Item>
                             <NavDropdown.Item href="#action/3.2">Another action Another action</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
                             </DropdownButton> */}
-                            <Avatar className="mr-4 h-p" alt="user" onClick={this.handleLogout} src={this.state.photoURL} />
+                            {/* <Avatar className="mr-4 h-p" alt="user" src={this.state.photoURL} /> */}
                             <Button className="mr-3 b-2blk f-20 ol-n bs-n" variant="outlined" color="primary">
                                 <Link className="n-l f-b" to="/SellIt/post">+SELL</Link>
                             </Button>
