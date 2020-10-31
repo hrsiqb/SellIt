@@ -39,22 +39,12 @@ class Home extends Component {
             document.getElementById("showMoreBtn").hidden = false
     }
     render() {
-        let mainDiv = {
-            display: 'flex',
-            maxWidth: '100vw',
-            flexDirection: 'column',
-            alignItems: 'center'
-        }
-        let itemsDiv = {
-            maxWidth: '1265px',
-            textAlign: 'center',
-        }
         let data = this.state.appendedData.map((data, index) => data ? <ItemCard data={data} key={index} /> : (<ItemCardSkeleton />))
         return (
             <div className="root">
                 <div className="img"></div>
-                <div style={mainDiv} className="mt-4 mb-4">
-                    <div style={itemsDiv}>{data}</div>
+                <div className="d-fc ai-c vw-m-100 mt-4 mb-4">
+                    <div className="w-m-1265px ta-c">{data}</div>
                     <Button className="btn b-2bl f-16 mt-3 ol-n bs-n" id="showMoreBtn" variant="outlined"
                         color="primary" onClick={this.loadMore}><b>Load More</b></Button>
                 </div>

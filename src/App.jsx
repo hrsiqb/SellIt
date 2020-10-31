@@ -26,10 +26,8 @@ class App extends Component {
                         <Route path='/SellIt/item/:id' children={<Item get_data={this.props.get_data} />} />
                         <Route path='/SellIt/post' component={Post} />
                         {/* if the path does'nt match any of the available routes, show error */}
-                        <Route path={'/', '/SellIt/', '/SellIt/item'} component={Error404} />
+                        <Route path={['/', '/SellIt/', '/SellIt/item']} component={Error404} />
                     </Switch>
-                    {/* <button onClick={() => this.props.set_data("set data")}>set Data</button> */}
-                    {/* <button onClick={() => loginWithFacebook()}>LoginWithFacebook</button> */}
                     <Footer />
                 </Router>
             </div>
