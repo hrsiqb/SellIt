@@ -112,6 +112,7 @@ const getLoginDetails = (res, rej) => {
                 displayName: data.name,
                 email: user.email,
                 photoURL: data.imageFile,
+                phone: data.phone,
                 uId: user.uid,
                 isLoggedIn: true
               })

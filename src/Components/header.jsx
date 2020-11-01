@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavDropdown, Form, FormControl } from 'react-bootstrap'
+import { Navbar, FormControl } from 'react-bootstrap'
 import { noUser } from '../data'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom"
@@ -41,7 +41,7 @@ class Header extends Component {
                 if (!data.photoURL) data.photoURL = noUser.userPrimary
                 this.setState(data)
             })
-            .catch((status) => {
+            .catch((error) => {
                 this.setState({ isLoggedIn: false, loading: false })
             })
     }
@@ -125,37 +125,6 @@ class Header extends Component {
                                     <Dropdown.Item className="p-2 pl-0" onClick={this.handleLogout}><FiLogOut className="mr-3 f-22" />Logout</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
-                            {/* <DropdownButton
-                                menuAlign="left"
-                                title="Dropdown left"
-                                id="dropdown-menu-align-left"
-                            >
-                                <Dropdown.Item eventKey="1">Action</Dropdown.Item>
-                                <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
-                                <Dropdown.Item eventKey="3">Something else here</Dropdown.Item>
-                                <Dropdown.Divider />
-                                <Dropdown.Item eventKey="4">Separated link</Dropdown.Item>
-                            </DropdownButton>
-                            <DropdownButton
-                                menuAlign="right"
-                                title="Dropdown right"
-                                id="dropdown-menu-align-right"
-                            >
-                                <Dropdown.Item>
-                                    <div className="card" style={{ width: "300px" }}>
-                                        <div className="card-body" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                                            <img src={this.state.photoURL} id="userPhoto" alt="User Photo" className="card-img-top" />
-                                            <h3 className="card-title" id="currentName">username</h3>
-                                            <p className="card-text" id="currentEmail">email</p>
-                                        </div> */}
-                            {/* <Link to="/"  style="display: flex; justify-content: center;" class="card-link btn btn-primary ml-2 mr-2">Logout</Link> */}
-                            {/* </div></Dropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">Another action Another action</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-                            </DropdownButton> */}
-                            {/* <Avatar className="mr-4 h-p" alt="user" src={this.state.photoURL} /> */}
                             <Button className="mr-3 b-2blk f-20 ol-n bs-n" variant="outlined" color="primary">
                                 <Link className="n-l f-b" to="/SellIt/post">+SELL</Link>
                             </Button>

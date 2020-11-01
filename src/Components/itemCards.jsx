@@ -4,8 +4,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import Button from '@material-ui/core/Button';
-import { Route, Link, Switch, BrowserRouter as Router, useParams, withRouter } from "react-router-dom"
-import BreadCrumb from './breadCrumb';
+import { Link } from "react-router-dom"
 import Carousel from 'react-bootstrap/Carousel'
 import { FiPhone } from 'react-icons/fi';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -68,7 +67,7 @@ class ItemMediaCard extends Component {
         }
         else {
             image = <Skeleton variant="rect" width={300} height={200} />
-            imageBtn = Array.from(new Array(4), x => <Skeleton className="mr-3 ml-3" variant="rect" width={65} height={65} />)
+            imageBtn = Array.from(new Array(4), () => <Skeleton className="mr-3 ml-3" variant="rect" width={65} height={65} />)
         }
         return (
             <div>

@@ -32,7 +32,6 @@ class Item extends Component {
                 const itemDesc = { description: addData.description, condition: addData.condition }
                 const itemDetail = { price: addData.price, title: addData.title, createdAt: addData.createdAt, location: addData.location }
 
-                let iId = this.props.match.params.id
                 let promise = new Promise((res, rej) => this.props.get_data("GETUSERDATA", res, rej, addData.sellerId))
                 promise.then(sellerData => {
                     const itemSeller = { memberSince: sellerData.memberSince, name: sellerData.name, photoUrl: sellerData.imageFile, phone: sellerData.phone }
