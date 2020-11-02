@@ -121,6 +121,7 @@
 .f-uc {
     text-transform: uppercase;
 }
+.f-cap {text-transform: capitalize !important;}
 
 .f-cg {color: rgba(0, 47, 52, .64);}
 .fc-g {color: rgba(0, 47, 52, .64);}

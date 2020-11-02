@@ -1,27 +1,35 @@
 import React, { Component, Fragment, createElement } from 'react';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { categories, cities } from '../data'
+import { categories, cities, noUser, noAd } from '../data'
 import TextField from '@material-ui/core/TextField';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import { RiImageAddFill } from 'react-icons/ri';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
-import { noUser } from '../data'
-import { getLoginDetails, getUserData } from '../config/firebase'
+import { FiPhone } from 'react-icons/fi';
+import { getLoginDetails, getUserData, insertAddData, insertUserPhone } from '../config/firebase'
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import { withSnackbar } from 'notistack';
 // import firebase from 'firebase/app'
 // import 'firebase/storage'
 
-export default class Post extends Component {
+class Post extends Component {
     constructor() {
         super()
         this.state = {
             userInfo: {},
-            adData: {},
+            adData: {
+                category: '',
+                condition: '',
+                title: '',
+                description: '',
+                price: '',
+                location: '',
+            },
             storage: {},
             render: {}
         }
@@ -29,6 +37,12 @@ export default class Post extends Component {
     componentWillMount() {
         this.state.render.loading = true
         this.checkLoginStatus()
+    }
+    showSnackBar = (msg, variant) => {
+        this.props.enqueueSnackbar(msg, {
+            variant,
+            autoHideDuration: 5000
+        });
     }
     handleChange = (action) => (e) => {
         // Category
@@ -56,9 +70,9 @@ export default class Post extends Component {
                 this.state.adData.price = e.target.value
                 break
             case 'image':
-                if (this.state.adData.image) {
-                    if (this.state.adData.image.length >= 4) console.log('done')
-                    this.state.adData.image.push(e.target.files[0])
+                if (this.state.storage.image) {
+                    if (this.state.storage.image.length >= 4) console.log('done')
+                    this.state.storage.image.push(e.target.files[0])
                     new Promise((res) => this.readURL(e.target, res))
                         .then((data) => {
                             this.state.storage.imageUrl.push(data)
@@ -66,7 +80,7 @@ export default class Post extends Component {
                         })
                 }
                 else {
-                    this.state.adData.image = Array.from(new Array(1), () => e.target.files[0])
+                    this.state.storage.image = Array.from(new Array(1), () => e.target.files[0])
                     new Promise((res) => this.readURL(e.target, res))
                         .then((data) => {
                             this.state.storage.imageUrl = Array.from(new Array(1), () => data)
@@ -75,11 +89,12 @@ export default class Post extends Component {
                 }
                 break
             case 'city':
-                console.log(e.target.value)
+                this.setState({ adData: { ...this.state.adData, location: e.target.value } })
+                break
+            case 'phone':
+                this.setState({ storage: { ...this.state.storage, phone: e.target.value } })
                 break
         }
-        this.setState(this.state)
-        console.log(this.state)
     }
     readURL = (input, res) => {
         if (input.files && input.files[0]) {
@@ -90,6 +105,62 @@ export default class Post extends Component {
             };
 
             reader.readAsDataURL(input.files[0]);
+        }
+    }
+    insertAd = () => {
+        let createdAt = new Date().toString().split(' ').slice(1, 4).join(' ')
+        this.state.adData.createdAt = createdAt
+        this.state.adData.sellerId = this.state.userInfo.uId
+        this.state.adData.src = [noAd.adImage]
+        new Promise((res, rej) => insertAddData(res, rej, this.state.adData))
+            .then((result) => {
+                this.showSnackBar('Ad posted successfully', 'success')
+                this.setState({ render: { ...this.state.render, loading: false } })
+            })
+            .catch((error) => {
+                this.showSnackBar(error.message, 'error')
+                this.setState({ render: { ...this.state.render, loading: false } })
+            })
+    }
+    submitAd = () => {
+        this.setState({ render: { ...this.state.render, loading: true } })
+        this.props.closeSnackbar()
+        if (this.state.storage.image) {
+        }
+        else {
+            let error = false
+            for (var property in this.state.adData) {
+                if (!(this.state.adData[property])) {
+                    this.showSnackBar(`Please enter ${property}`, 'error')
+                    error = true
+                }
+            }
+            if (!(this.state.userInfo.phone)) {
+                if (!(this.state.storage.phone)) {
+                    this.showSnackBar(`Please enter your phone number`, 'error')
+                    error = true
+                }
+                else {
+                    if (this.state.storage.phone.length !== 11) {
+                        this.showSnackBar(`Phone must have 11 numbers`, 'error')
+                        error = true
+                    }
+                }
+            }
+            console.log(error)
+            if (!error) {
+                if (!(this.state.userInfo.phone)) {
+                    new Promise((res, rej) => insertUserPhone(res, rej, this.state.userInfo.uId, this.state.storage.phone))
+                        .then((result) => {
+                            this.insertAd()
+                        })
+                        .catch((error) => {
+                            this.showSnackBar(error.message, 'error')
+                        })
+                }
+                else this.insertAd()
+            }
+            else this.setState({ render: { ...this.state.render, loading: false } })
         }
     }
     upload = () => {
@@ -105,27 +176,28 @@ export default class Post extends Component {
         new Promise((res, rej) => getLoginDetails(res, rej))
             .then((data) => {
                 if (!data.photoURL) data.photoURL = noUser
-                this.setState({ userInfo: data })
-                console.log(this.state.userInfo)
+                this.state.userInfo = data
                 if (data.phone) this.state.render.loading = false
                 else {
                     new Promise((res, rej) => getUserData(res, rej, data.uId))
                         .then((data) => {
-                            this.setState({ userInfo: { phone: data.phone }, render: { loading: false } })
+                            this.state.userInfo.phone = data.phone
+                            this.state.render.loading = false
+                            this.setState(this.state)
                         })
                         .catch((error) => {
-                            this.setState({ userInfo: { isLoggedIn: false }, render: { loading: false } })
+                            this.setState({ render: { ...this.state.render, loading: false, isLoggedIn: false } })
                         })
                 }
                 console.log(data)
             })
             .catch((error) => {
-                this.setState({ userInfo: { isLoggedIn: false }, render: { loading: false } })
+                this.setState({ render: { ...this.state.render, isLoggedIn: false, loading: false } })
             })
     }
     render() {
         var inputDisable = false
-        if (this.state.adData.image) { if (this.state.adData.image.length >= 4) inputDisable = true }
+        if (this.state.storage.image) { if (this.state.storage.image.length >= 4) inputDisable = true }
         var categoriesTab = []
         for (var property in categories) {
             categoriesTab.push(
@@ -197,7 +269,7 @@ export default class Post extends Component {
                     </div>
                     {/* Picture */}
                     <div className="b-b-1slv p-3 pl-4 pb-4">
-                        <p className="f-20 f-b7 mb-3">UPLOAD UPTO 4 PHOTOS</p>
+                        <p className="f-20 f-b7 mb-3">UPLOAD UPTO 4 PHOTOS (optional)</p>
                         <input disabled={inputDisable} accept="image/*" onChange={this.handleChange('image')} className='d-n' id="icon-button-file" type="file" />
                         <label htmlFor="icon-button-file" className="d-fr h-p">{images}</label>
                     </div>
@@ -210,7 +282,7 @@ export default class Post extends Component {
                                 className="h-40"
                                 labelId="demo-mutiple-name-label"
                                 id="demo-mutiple-name"
-                                value={this.state.adData.city}
+                                value={this.state.adData.location}
                                 onChange={this.handleChange('city')}
                             >
                                 {cities.map((name) => (
@@ -221,19 +293,26 @@ export default class Post extends Component {
                             </Select></FormControl>
                     </div>
                     {/* Phone number, if not provided */}
-                    {console.log('pphone.', this.state.userInfo.phone)}
+                    {console.log(this.state.userInfo)}
                     {!(this.state.userInfo.phone) &&
                         <div className="b-b-1slv p-3 pl-4 pb-4">
-                            <p className="f-20 f-b7 mb-3">ENTER YOUR PHONE NUMBER</p>
+                            <p className="f-20 f-b7 mb-3">ENTER CONTACT INFO</p>
                             <p className="m-0">Phone *</p>
                             <OutlinedInput className="w-100 w-m-400px h-40" type="number"
+                                type="number"
                                 onChange={this.handleChange('phone')}
-                                startAdornment={<InputAdornment position="start">Rs
-                            <span className="h-30 b-r-1slv w-10px"></span></InputAdornment>}
+                                startAdornment={<InputAdornment position="start">
+                                    <FiPhone />
+                                    <span className="h-30 b-r-1slv w-10px"></span></InputAdornment>}
                             />
                         </div>}
+                    {/* Submit Button */}
+                    <div className="b-b-1slv p-4 ta-r">
+                        <Button onClick={this.submitAd} className="b-2blk f-b ol-n bs-n f-cap">Post Now</Button>
+                    </div>
                 </div>
             </div>
         )
     }
 }
+export default withSnackbar(Post)

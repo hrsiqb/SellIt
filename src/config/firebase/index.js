@@ -61,6 +61,16 @@ const signUpWithEmail = (res, rej, data) => {
       rej(error)
     });
 }
+
+const insertUserPhone = (res, rej, uId, phone) => {
+  firebase.database().ref(`Users/${uId}/phone`).set(phone)
+    .then((result) => {
+      res(result)
+    })
+    .catch(function (error) {
+      rej(error)
+    })
+}
 const insertUserData = (res, rej, provider, data) => {
   if (data.imageFile && provider === 'password') {
     firebase.storage().ref().child(`images/userMedia/${data.uId}`).put(data.imageFile)
@@ -87,6 +97,15 @@ const insertUserData = (res, rej, provider, data) => {
         rej(error)
       })
   }
+}
+const uploadImage = (res, rej, image, imageName) => {
+  firebase.storage().ref().child(`images/adMedia/${imageName}`).put(image)
+    .then((snapshot) => {
+      snapshot.ref.getDownloadURL()
+        .then((url) => res(url))
+        .catch((error) => rej(error))
+    })
+    .catch((error) => rej(error))
 }
 const getLoginDetails = (res, rej) => {
   var run = true//flag to indicate getLoginDetails() has been called
@@ -137,27 +156,15 @@ function logout(res, rej) {
       rej(error)
     })
 }
-var insertAddData = (data) => {
-  firebase.database().ref(`All Ads`).push(data[0])
+var insertAddData = (res, rej, data) => {
+  let key = firebase.database().ref('All Ads').push().key //generate a key for the Messages object
+  data.iId = key
+  firebase.database().ref(`All Ads/${key}`).set(data)
     .then(result => {
-      console.log(result)
+      res(result)
     })
     .catch(error => {
-      console.log(error)
-    })
-  firebase.database().ref(`All Ads`).push(data[1])
-    .then(result => {
-      console.log(result)
-    })
-    .catch(error => {
-      console.log(error)
-    })
-  firebase.database().ref(`All Ads`).push(data[2])
-    .then(result => {
-      console.log(result)
-    })
-    .catch(error => {
-      console.log(error)
+      rej(error)
     })
 }
 function getNumberOfAdds(resolve) {
@@ -236,5 +243,6 @@ export {
   signUpWithEmail,
   loginWithEmail,
   insertUserData,
+  insertUserPhone,
   logout
 }

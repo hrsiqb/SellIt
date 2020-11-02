@@ -91,6 +91,7 @@ class Header extends Component {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <div id="basic-navbar-nav" className="d-c">
                     {/* <Nav className="m-auto"> */}
+  <Navbar.Collapse id="basic-navbar-nav">
                     <FormControl type="text" defaultValue="Pakistan" className="mr-sm-2 w-25" />
                     <FormControl type="text" placeholder="Search" className="mr-sm-2 w-50" />
                     <Button className="ol-n bc-blk">
@@ -137,7 +138,7 @@ class Header extends Component {
                                 </ButtonGroup>
                                 <Button className="mr-3 b-2blk f-20 ol-n bs-n f-b" onClick={() => this.openDialog('login')} variant="outlined">+SELL</Button>
                             </React.Fragment>
-                        )}
+                        )}</Navbar.Collapse>
                     <LoginDialogComp onClose={(check) => this.closeDialog(check)} open={this.state.openLoginDialog} />
                     <RegisterDialogComp onClose={(check) => this.closeDialog(check)} open={this.state.openRegisterDialog} />
                     {/* </Nav> */}
