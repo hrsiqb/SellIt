@@ -32,7 +32,7 @@ function loginWithGoogle(res, rej) {
     });
 }
 const loginWithFacebook = (res, rej) => {
-  var provider = new firebase.auth.FacebookAuthProvider();
+  var provider = new firebase.auth.FacebookAuthProvider()
   firebase.auth().signInWithPopup(provider)
     .then((result) => {
       res(result)
@@ -73,39 +73,36 @@ const insertUserPhone = (res, rej, uId, phone) => {
 }
 const insertUserData = (res, rej, provider, data) => {
   if (data.imageFile && provider === 'password') {
-    firebase.storage().ref().child(`images/userMedia/${data.uId}`).put(data.imageFile)
-      .then((snapshot) => {
-        snapshot.ref.getDownloadURL()
-          .then((url) => {
-            data.imageFile = url
-            firebase.database().ref(`Users/${data.uId}`).set(data)
-              .then((result) => {
-                res(result)
-              })
-              .catch(function (error) {
-                rej(error)
-              })
-          })
+    // firebase.storage().ref().child(`images/userMedia/${data.uId}`).put(data.imageFile)
+    //   .then((snapshot) => {
+    //     snapshot.ref.getDownloadURL()
+    //       .then((url) => {
+    new Promise((resolve, reject) => uploadImage(resolve, reject,
+      { folder: 'userMedia', image: data.imageFile, name: data.uId }))
+      .then((url) => {
+        data.imageFile = url
+        firebase.database().ref(`Users/${data.uId}`).set(data)
+          .then(result => res(result))
+          .catch(error => rej(error))
       })
+      .catch(error => rej(error))
+    //     })
+    // })
   }
   else {
     firebase.database().ref(`Users/${data.uId}`).set(data)
-      .then((result) => {
-        res(result)
-      })
-      .catch(function (error) {
-        rej(error)
-      })
+      .then(result => res(result))
+      .catch(error => rej(error))
   }
 }
-const uploadImage = (res, rej, image, imageName) => {
-  firebase.storage().ref().child(`images/adMedia/${imageName}`).put(image)
+const uploadImage = (res, rej, data) => {
+  firebase.storage().ref().child(`images/${data.folder}/${data.name}`).put(data.image)
     .then((snapshot) => {
       snapshot.ref.getDownloadURL()
-        .then((url) => res(url))
-        .catch((error) => rej(error))
+        .then(url => res(url))
+        .catch(error => rej(error))
     })
-    .catch((error) => rej(error))
+    .catch(error => rej(error))
 }
 const getLoginDetails = (res, rej) => {
   var run = true//flag to indicate getLoginDetails() has been called
@@ -156,16 +153,16 @@ function logout(res, rej) {
       rej(error)
     })
 }
+var generateFirebaseKey = (ref) => {
+  return firebase.database().ref(ref).push().key //generate a key for the Messages object
+}
 var insertAddData = (res, rej, data) => {
-  let key = firebase.database().ref('All Ads').push().key //generate a key for the Messages object
-  data.iId = key
-  firebase.database().ref(`All Ads/${key}`).set(data)
-    .then(result => {
-      res(result)
-    })
-    .catch(error => {
-      rej(error)
-    })
+  // let key = firebase.database().ref('All Ads').push().key //generate a key for the Messages object
+  // data.iId = key
+  console.log(data)
+  firebase.database().ref(`All Ads/${data.iId}`).set(data)
+    .then(result => res(result))
+    .catch(error => rej(error))
 }
 function getNumberOfAdds(resolve) {
   var ref = firebase.database().ref("All Ads")
@@ -244,5 +241,7 @@ export {
   loginWithEmail,
   insertUserData,
   insertUserPhone,
-  logout
+  logout,
+  uploadImage,
+  generateFirebaseKey
 }

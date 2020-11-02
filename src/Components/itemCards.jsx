@@ -16,15 +16,20 @@ class ItemCard extends Component {
         const { price, title, location, createdAt, iId, src } = this.props.data
         var formatPrice = Number(price).toLocaleString('en');
         let image = []
-        if (src)
-            image = src.map((data) => <Carousel.Item><img className="itemCard-img" src={data} alt="image" /></Carousel.Item>)
+        if (src) {
+            if (src.length === 1) image = <img className="itemCard-img" src={src[0]} alt="image" />
+            else {
+                image = src.map((data) => <Carousel.Item><img className="itemCard-img" src={data} alt="image" /></Carousel.Item>)
+                image = <Carousel>{image}</Carousel>
+            }
+        }
         else image = <Skeleton variant="rect" width={300} height={200} />
         return (
             <Link to={`/SellIt/item/${iId}`}>
                 <Card className="itemCard-card mt-1 mb-1 mr-2 ml-2" variant="outlined">
                     <CardActionArea className="ol-n">
                         <CardMedia className="itemCard-media">
-                            <Carousel>{image}</Carousel>
+                            {image}
                         </CardMedia>
                         <div className="itemCard-content">
                             <p className="f-20 f-b mb-0 ta-s">{`Rs ${formatPrice}`}</p>
@@ -59,11 +64,15 @@ class ItemMediaCard extends Component {
         let image = []
         let imageBtn = []
         if (src) {
-            image = src.map((data, key) => <Carousel.Item id={`carousel_${key}`} className="bc-blk"><img className="d-b-m-a" src={data} alt="image" height="482px" /></Carousel.Item>)
-            imageBtn = src.map((data, key) => (
-                key ? <Button className="imageBtn ol-n mr-3 ml-3" value={key} onClick={this.handleChange} style={{ backgroundImage: `url(${data})` }}></Button>
-                    : <Button className="imageBtn ol-n bs-2blk mr-3 ml-3" value={key} onClick={this.handleChange} style={{ backgroundImage: `url(${data})` }}></Button>
-            ))
+            if (src.length === 1) image = <div className="bc-blk"><img className="d-b-m-a" src={src[0]} alt="image" /></div>
+            else {
+                imageBtn = src.map((data, key) => (
+                    key ? <Button className="imageBtn ol-n mr-3 ml-3" value={key} onClick={this.handleChange} style={{ backgroundImage: `url(${data})` }}></Button>
+                        : <Button className="imageBtn ol-n bs-2blk mr-3 ml-3" value={key} onClick={this.handleChange} style={{ backgroundImage: `url(${data})` }}></Button>
+                ))
+                image = src.map((data, key) => <Carousel.Item id={`carousel_${key}`} className="bc-blk"><img className="d-b-m-a" src={data} alt="image" height="482px" /></Carousel.Item>)
+                image = <Carousel>{image}</Carousel>
+            }
         }
         else {
             image = <Skeleton variant="rect" width={300} height={200} />
@@ -73,7 +82,7 @@ class ItemMediaCard extends Component {
             <div>
                 <Card className="itemMedia-card m-0" variant="outlined" >
                     <CardMedia className="itemMedia-media">
-                        <Carousel>{image}</Carousel>
+                        {image}
                     </CardMedia>
                     <CardContent className="itemMedia-content mt-3 mb-3">{imageBtn}</CardContent>
                 </Card>

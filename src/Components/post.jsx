@@ -8,14 +8,20 @@ import { RiImageAddFill } from 'react-icons/ri';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import { FiPhone } from 'react-icons/fi';
-import { getLoginDetails, getUserData, insertAddData, insertUserPhone } from '../config/firebase'
+import {
+    getLoginDetails,
+    getUserData,
+    insertAddData,
+    insertUserPhone,
+    uploadImage,
+    generateFirebaseKey
+} from '../config/firebase'
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { withSnackbar } from 'notistack';
-// import firebase from 'firebase/app'
-// import 'firebase/storage'
+import history from '../history';
 
 class Post extends Component {
     constructor() {
@@ -45,7 +51,6 @@ class Post extends Component {
         });
     }
     handleChange = (action) => (e) => {
-        // Category
         switch (action) {
             case 'category':
                 for (var i = 0; i < e.currentTarget.parentNode.childNodes.length; i++) {
@@ -71,7 +76,6 @@ class Post extends Component {
                 break
             case 'image':
                 if (this.state.storage.image) {
-                    if (this.state.storage.image.length >= 4) console.log('done')
                     this.state.storage.image.push(e.target.files[0])
                     new Promise((res) => this.readURL(e.target, res))
                         .then((data) => {
@@ -107,14 +111,15 @@ class Post extends Component {
             reader.readAsDataURL(input.files[0]);
         }
     }
-    insertAd = () => {
+    insertAd = (key) => {
+        console.log(key)
         let createdAt = new Date().toString().split(' ').slice(1, 4).join(' ')
         this.state.adData.createdAt = createdAt
         this.state.adData.sellerId = this.state.userInfo.uId
-        this.state.adData.src = [noAd.adImage]
-        new Promise((res, rej) => insertAddData(res, rej, this.state.adData))
-            .then((result) => {
-                this.showSnackBar('Ad posted successfully', 'success')
+        if (!(this.state.adData.src)) this.state.adData.src = [noAd.adImage]
+        new Promise((res, rej) => insertAddData(res, rej, { ...this.state.adData, iId: key }))
+            .then(() => {
+                history.push('/SellIt/post/success', key)
                 this.setState({ render: { ...this.state.render, loading: false } })
             })
             .catch((error) => {
@@ -125,52 +130,64 @@ class Post extends Component {
     submitAd = () => {
         this.setState({ render: { ...this.state.render, loading: true } })
         this.props.closeSnackbar()
-        if (this.state.storage.image) {
+        let error = false
+        for (var property in this.state.adData) {
+            if (!(this.state.adData[property])) {
+                this.showSnackBar(`Please enter ${property}`, 'error')
+                error = true
+            }
         }
-        else {
-            let error = false
-            for (var property in this.state.adData) {
-                if (!(this.state.adData[property])) {
-                    this.showSnackBar(`Please enter ${property}`, 'error')
+        if (!(this.state.userInfo.phone)) {
+            if (!(this.state.storage.phone)) {
+                this.showSnackBar(`Please enter your phone number`, 'error')
+                error = true
+            }
+            else {
+                if (this.state.storage.phone.length !== 11) {
+                    this.showSnackBar(`Phone must have 11 numbers`, 'error')
                     error = true
                 }
             }
-            if (!(this.state.userInfo.phone)) {
-                if (!(this.state.storage.phone)) {
-                    this.showSnackBar(`Please enter your phone number`, 'error')
-                    error = true
-                }
-                else {
-                    if (this.state.storage.phone.length !== 11) {
-                        this.showSnackBar(`Phone must have 11 numbers`, 'error')
-                        error = true
-                    }
-                }
-            }
-            console.log(error)
-            if (!error) {
-                if (!(this.state.userInfo.phone)) {
-                    new Promise((res, rej) => insertUserPhone(res, rej, this.state.userInfo.uId, this.state.storage.phone))
-                        .then((result) => {
-                            this.insertAd()
+        }
+        if (!error) {
+            let key = generateFirebaseKey('All Ads')
+            if (this.state.storage.image) {
+                this.state.storage.image.map((data, index) => {
+                    new Promise((res, rej) => uploadImage(res, rej,
+                        { folder: 'adMedia', image: data, name: `${key}_${index + 1}` }))
+                        .then((photoUrl) => {
+                            if (!(this.state.adData.src)) this.state.adData.src = []
+                            this.state.adData.src.push(photoUrl)
+                            if (this.state.adData.src.length === this.state.storage.image.length) {
+                                if (!(this.state.userInfo.phone)) {
+                                    new Promise((res, rej) => insertUserPhone(res, rej, this.state.userInfo.uId, this.state.storage.phone))
+                                        .then(() => this.insertAd(key))
+                                        .catch((error) => {
+                                            this.setState({ render: { ...this.state.render, loading: false } })
+                                        })
+                                }
+                                else this.insertAd(key)
+                            }
                         })
                         .catch((error) => {
                             this.showSnackBar(error.message, 'error')
+                            this.setState({ render: { ...this.state.render, loading: false } })
+                        })
+                })
+            }
+            else {
+                if (!(this.state.userInfo.phone)) {
+                    new Promise((res, rej) => insertUserPhone(res, rej, this.state.userInfo.uId, this.state.storage.phone))
+                        .then(() => this.insertAd(key))
+                        .catch((error) => {
+                            this.showSnackBar(error.message, 'error')
+                            this.setState({ render: { ...this.state.render, loading: false } })
                         })
                 }
-                else this.insertAd()
+                else this.insertAd(key)
             }
-            else this.setState({ render: { ...this.state.render, loading: false } })
         }
-    }
-    upload = () => {
-        // firebase.storage().ref().child('images/image.jpg').put(this.state.image)
-        //     .then((snapshot) => {
-        //         snapshot.ref.getDownloadURL()
-        //             .then((url) => {
-        //                 console.log(url)
-        //             })
-        //     })
+        else this.setState({ render: { ...this.state.render, loading: false } })
     }
     checkLoginStatus = () => {
         new Promise((res, rej) => getLoginDetails(res, rej))
@@ -189,11 +206,8 @@ class Post extends Component {
                             this.setState({ render: { ...this.state.render, loading: false, isLoggedIn: false } })
                         })
                 }
-                console.log(data)
             })
-            .catch((error) => {
-                this.setState({ render: { ...this.state.render, isLoggedIn: false, loading: false } })
-            })
+            .catch(() => history.push('/SellIt'))
     }
     render() {
         var inputDisable = false
@@ -239,12 +253,12 @@ class Post extends Component {
                 <p className="ta-c f-22 mt-2 f-b7">POST YOUR AD</p>
                 <div className="w-m-800px m-a w-100 mb-3 b-1slv">
                     {/* categories */}
-                    <div className="b-b-1slv pb-3">
+                    <div className="pb-3">
                         <p className="f-20 f-b7 p-3 mb-0">CHOOSE A CATEGORY</p>
                         <div className="b-1slv b-t-n bl-n w-100 w-m-400px">{categoriesTab}</div>
                     </div>
                     {/* Details */}
-                    <div className="b-b-1slv p-3 pl-4 pb-4">
+                    <div className="b-t-1slv p-3 pl-4 pb-4">
                         <p className="f-20 f-b7 mb-2">INCLUDE SOME DETAILS</p>
                         <p className="m-0">Condition *</p>
                         <ButtonGroup aria-label="large outlined primary button group">
@@ -258,7 +272,7 @@ class Post extends Component {
                         <TextField onChange={this.handleChange('description')} multiline rows={4} size="small" className="w-100 w-m-400px" id="outlined-basic" variant="outlined" />
                     </div>
                     {/* Price */}
-                    <div className="b-b-1slv p-3 pl-4 pb-4">
+                    <div className="b-t-1slv p-3 pl-4 pb-4">
                         <p className="f-20 f-b7 mb-3">SET A PRICE</p>
                         <p className="m-0">Price *</p>
                         <OutlinedInput className="w-100 w-m-400px h-40" type="number"
@@ -268,13 +282,13 @@ class Post extends Component {
                         />
                     </div>
                     {/* Picture */}
-                    <div className="b-b-1slv p-3 pl-4 pb-4">
+                    <div className="b-t-1slv p-3 pl-4 pb-4">
                         <p className="f-20 f-b7 mb-3">UPLOAD UPTO 4 PHOTOS (optional)</p>
                         <input disabled={inputDisable} accept="image/*" onChange={this.handleChange('image')} className='d-n' id="icon-button-file" type="file" />
                         <label htmlFor="icon-button-file" className="d-fr h-p">{images}</label>
                     </div>
                     {/* Location */}
-                    <div className="b-b-1slv p-3 pl-4 pb-4">
+                    <div className="b-t-1slv p-3 pl-4 pb-4">
                         <p className="f-20 f-b7 mb-3">CONFIRM YOUR LOCATION</p>
                         <p className="m-0">City *</p>
                         <FormControl variant="outlined" className="w-100 w-m-400px">
@@ -293,9 +307,8 @@ class Post extends Component {
                             </Select></FormControl>
                     </div>
                     {/* Phone number, if not provided */}
-                    {console.log(this.state.userInfo)}
                     {!(this.state.userInfo.phone) &&
-                        <div className="b-b-1slv p-3 pl-4 pb-4">
+                        <div className="b-t-1slv p-3 pl-4 pb-4">
                             <p className="f-20 f-b7 mb-3">ENTER CONTACT INFO</p>
                             <p className="m-0">Phone *</p>
                             <OutlinedInput className="w-100 w-m-400px h-40" type="number"
@@ -307,7 +320,7 @@ class Post extends Component {
                             />
                         </div>}
                     {/* Submit Button */}
-                    <div className="b-b-1slv p-4 ta-r">
+                    <div className="b-t-1slv p-4 ta-r">
                         <Button onClick={this.submitAd} className="b-2blk f-b ol-n bs-n f-cap">Post Now</Button>
                     </div>
                 </div>

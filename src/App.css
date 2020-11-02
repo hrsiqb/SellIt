@@ -73,6 +73,7 @@
 .f-23 {font-size: 23px !important}
 .f-30{font-size: 30px !important}
 .f-45{font-size: 45px !important}
+.f-84{font-size: 84px !important}
 
 .f-b {
     font-weight: bold !important;
@@ -165,7 +166,7 @@
 .w-30{width: 30px;}
 .w-10px{width: 10px !important;}
 
-.w-100 {width: 100% !important;}
+.w-100{width: 100% !important;}
 .w-87{width: 87%;}
 .w-85{width: 85%;}
 .w-80{width: 80%;}
@@ -286,7 +287,9 @@ b
 .h-p:hover {
     cursor: pointer;
 }
-
+.b-rep-n{
+    background-repeat: no-repeat;
+}
 .d-b-m-a {
     display: block;
     margin: auto;
@@ -355,6 +358,9 @@ b
     height: 65px;
     width: 65px;
     background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: black !important;
 }
 
 .itemMedia-content {
@@ -443,7 +449,6 @@ b
 .b-r-1slv {border-right: 1px solid rgba(204, 213, 214, 1)}
 .b-1slv{border: 1px solid rgba(204, 213, 214, 1)}
 .b-t-1slv {border-top: 1px solid rgba(204, 213, 214, 1)}
-.b-b-1slv {border-top: 1px solid rgba(204, 213, 214, 1)}
 .b-t-n{border-top: none;}
 .b-b-1slv {border-top: 1px solid rgba(204, 213, 214, 1)}
 .b-b-2gry {border-bottom: 2px solid rgb(238, 238, 238)}

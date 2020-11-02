@@ -7,9 +7,11 @@ import Item from './Components/item';
 import { Error404 } from './Components/error';
 import Home from './Components/home';
 import Post from './Components/post';
-import { Route, Link, Switch, BrowserRouter as Router, withRouter } from "react-router-dom"
+import PostSuccess from './Components/postSuccess';
+import { Route, Link, Switch, Router, withRouter } from "react-router-dom"
 import { connect } from "react-redux";
 import { set_data, get_data } from './store/action'
+import history from './history';
 
 class App extends Component {
     componentDidMount() {
@@ -18,17 +20,22 @@ class App extends Component {
     render() {
         return (
             <div className="root">
-                <Router>
-                    <Header />
-                    <CategoriesBar />
+                <Router history={history}>
+                    {/* <Header /> */}
+                    <Route path='/SellIt' component={Header} />
+                    <Route path='/SellIt' component={CategoriesBar} />
+                    {/* <CategoriesBar /> */}
                     <Switch>
                         <Route exact path={['/SellIt', '/SellIt/home']} children={<Home get_data={this.props.get_data} />} />
                         <Route path='/SellIt/item/:id' children={<Item get_data={this.props.get_data} />} />
+                        <Route path='/SellIt/post/success' component={PostSuccess} />
                         <Route path='/SellIt/post' component={Post} />
                         {/* if the path does'nt match any of the available routes, show error */}
                         <Route path={['/', '/SellIt/', '/SellIt/item']} component={Error404} />
                     </Switch>
-                    <Footer />
+                    
+                    <Route path='/SellIt' component={Footer} />
+                    {/* <Footer /> */}
                 </Router>
             </div>
         )
