@@ -52,9 +52,8 @@ class Header extends Component {
             .then(() => {
                 this.setState({ isLoggedIn: false, loading: false })
                 this.showSnackBar('Logout successful', 'success')
-                console.log(history.location.pathname)
-                if (history.location.pathname.includes('post')) {
-                    history.push('/SellIt')
+                if (this.props.history.location.pathname.includes('post')) {
+                    this.props.history.push('/SellIt')
                 }
             })
             .catch((error) => {

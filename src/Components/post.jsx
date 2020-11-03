@@ -119,7 +119,7 @@ class Post extends Component {
         if (!(this.state.adData.src)) this.state.adData.src = [noAd.adImage]
         new Promise((res, rej) => insertAddData(res, rej, { ...this.state.adData, iId: key }))
             .then(() => {
-                history.push('/SellIt/post/success', key)
+                this.props.history.push('/SellIt/post/success', key)
                 this.setState({ render: { ...this.state.render, loading: false } })
             })
             .catch((error) => {
@@ -207,7 +207,7 @@ class Post extends Component {
                         })
                 }
             })
-            .catch(() => history.push('/SellIt'))
+            .catch(() => this.props.history.push('/SellIt'))
     }
     render() {
         var inputDisable = false
