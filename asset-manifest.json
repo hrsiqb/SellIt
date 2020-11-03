@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/SellIt/static/css/main.f34cad6e.chunk.css",
-    "main.js": "/SellIt/static/js/main.91aaed21.chunk.js",
-    "main.js.map": "/SellIt/static/js/main.91aaed21.chunk.js.map",
+    "main.js": "/SellIt/static/js/main.bf7311f9.chunk.js",
+    "main.js.map": "/SellIt/static/js/main.bf7311f9.chunk.js.map",
     "runtime-main.js": "/SellIt/static/js/runtime-main.da3b8ac2.js",
     "runtime-main.js.map": "/SellIt/static/js/runtime-main.da3b8ac2.js.map",
     "static/css/2.d9ad5f5c.chunk.css": "/SellIt/static/css/2.d9ad5f5c.chunk.css",
     "static/js/2.8324416a.chunk.js": "/SellIt/static/js/2.8324416a.chunk.js",
     "static/js/2.8324416a.chunk.js.map": "/SellIt/static/js/2.8324416a.chunk.js.map",
     "index.html": "/SellIt/index.html",
-    "precache-manifest.389f378ea4447b4d2076e2eee8c0d501.js": "/SellIt/precache-manifest.389f378ea4447b4d2076e2eee8c0d501.js",
+    "precache-manifest.f199308a0eee7095816f436e1878e4a6.js": "/SellIt/precache-manifest.f199308a0eee7095816f436e1878e4a6.js",
     "service-worker.js": "/SellIt/service-worker.js",
     "static/css/2.d9ad5f5c.chunk.css.map": "/SellIt/static/css/2.d9ad5f5c.chunk.css.map",
     "static/css/main.f34cad6e.chunk.css.map": "/SellIt/static/css/main.f34cad6e.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.d9ad5f5c.chunk.css",
     "static/js/2.8324416a.chunk.js",
     "static/css/main.f34cad6e.chunk.css",
-    "static/js/main.91aaed21.chunk.js"
+    "static/js/main.bf7311f9.chunk.js"
   ]
 }
