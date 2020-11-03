@@ -8,32 +8,37 @@ import { Error404 } from './Components/error';
 import Home from './Components/home';
 import Post from './Components/post';
 import PostSuccess from './Components/postSuccess';
-import { Route, Link, Switch, BrowserRouter as Router, withRouter } from "react-router-dom"
+import {
+    Route, Switch,
+    HashRouter as Router, // if deploying on sub-directory uncomment this line
+    // BrowserRouter as Router, // if deploying on root directory uncomment this line
+    withRouter
+} from "react-router-dom"
 import { connect } from "react-redux";
 import { set_data, get_data } from './store/action'
 
 class App extends Component {
     componentDidMount() {
-        
+
     }
     render() {
         return (
             <div className="root">
-                <Router >
+                <Router>
                     {/* <Header /> */}
-                    <Route path='/SellIt' component={Header} />
-                    <Route path='/SellIt' component={CategoriesBar} />
+                    <Route path='/' component={Header} />
+                    <Route path='/' component={CategoriesBar} />
                     {/* <CategoriesBar /> */}
                     <Switch>
-                        <Route exact path={['/SellIt', '/SellIt/home']} children={<Home get_data={this.props.get_data} />} />
-                        <Route path='/SellIt/item/:id' children={<Item get_data={this.props.get_data} />} />
-                        <Route path='/SellIt/post/success' component={PostSuccess} />
-                        <Route path='/SellIt/post' component={withRouter(Post)} />
+                        <Route exact path={['/', '/home']} children={<Home get_data={this.props.get_data} />} />
+                        <Route path='/item/:id' children={<Item get_data={this.props.get_data} />} />
+                        <Route path='/post/success' component={PostSuccess} />
+                        <Route path='/post' component={withRouter(Post)} />
                         {/* if the path does'nt match any of the available routes, show error */}
-                        <Route path={['/', '/SellIt/', '/SellIt/item']} component={Error404} />
+                        <Route path={['/', '/', '/item']} component={Error404} />
                     </Switch>
 
-                    <Route path='/SellIt' component={Footer} />
+                    <Route path='/' component={Footer} />
                     {/* <Footer /> */}
                 </Router>
             </div>

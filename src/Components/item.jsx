@@ -29,7 +29,7 @@ class Item extends Component {
         promise.then(addData => {
             if (addData) {
                 const itemMedia = addData.src
-                const itemDesc = { description: addData.description, condition: addData.condition }
+                const itemDesc = { description: addData.description, condition: addData.condition, type: addData.category }
                 const itemDetail = { price: addData.price, title: addData.title, createdAt: addData.createdAt, location: addData.location }
 
                 let promise = new Promise((res, rej) => this.props.get_data("GETUSERDATA", res, rej, addData.sellerId))
@@ -47,7 +47,7 @@ class Item extends Component {
             !this.state.error ?
                 <div className="d-f jc-c mb-4 mt-5">
                     <div className="m-0">
-                        <BreadCrumb type={"Cars"} />
+                        {this.state.itemDesc && <BreadCrumb type={this.state.itemDesc.type} />}
                         <br />
                         <div className="">
                             <section className="mr-3 d-il-b">

@@ -53,7 +53,7 @@ class Header extends Component {
                 this.setState({ isLoggedIn: false, loading: false })
                 this.showSnackBar('Logout successful', 'success')
                 if (this.props.history.location.pathname.includes('post')) {
-                    this.props.history.push('/SellIt')
+                    this.props.history.push('/')
                 }
             })
             .catch((error) => {
@@ -91,7 +91,7 @@ class Header extends Component {
                 <Backdrop className='fc-w zInd-12' open={this.state.loading}>
                     <CircularProgress color="inherit" />
                 </Backdrop>
-                <Navbar.Brand className="ml-3" style={{ fontSize: "30px" }}><b><Link className="n-l ol-n" to="/SellIt/">SellIt</Link></b></Navbar.Brand>
+                <Navbar.Brand className="ml-3" style={{ fontSize: "30px" }}><b><Link className="n-l ol-n" to="/">SellIt</Link></b></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <div id="basic-navbar-nav" className="d-c">
                     {/* <Nav className="m-auto"> */}
@@ -131,7 +131,7 @@ class Header extends Component {
                                     </Dropdown.Menu>
                                 </Dropdown>
                                 <Button className="mr-3 b-2blk f-20 ol-n bs-n" variant="outlined" color="primary">
-                                    <Link className="n-l f-b" to="/SellIt/post">+SELL</Link>
+                                    <Link className="n-l f-b" to="/post">+SELL</Link>
                                 </Button>
                             </React.Fragment>)
                             : (

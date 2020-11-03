@@ -25,7 +25,7 @@ class ItemCard extends Component {
         }
         else image = <Skeleton variant="rect" width={300} height={200} />
         return (
-            <Link to={`/SellIt/item/${iId}`}>
+            <Link to={`/item/${iId}`}>
                 <Card className="itemCard-card mt-1 mb-1 mr-2 ml-2" variant="outlined">
                     <CardActionArea className="ol-n">
                         <CardMedia className="itemCard-media">
@@ -55,7 +55,6 @@ class ItemMediaCard extends Component {
         e.target.classList.add('bs-2blk')
         for (var i = 0; i < carouselInner.length; i++) { carouselInner[i].classList.remove('active') }
         targetCarousel.classList.add('active')
-        console.log(carouselIndicators.length)
         for (var i = 0; i < carouselIndicators.length; i++) { carouselIndicators[i].classList.remove('active') }
         carouselIndicators[e.target.value].classList.add('active')
     }
@@ -67,8 +66,8 @@ class ItemMediaCard extends Component {
             if (src.length === 1) image = <div className="bc-blk"><img className="d-b-m-a" src={src[0]} alt="image" /></div>
             else {
                 imageBtn = src.map((data, key) => (
-                    key ? <Button className="imageBtn ol-n mr-3 ml-3" value={key} onClick={this.handleChange} style={{ backgroundImage: `url(${data})` }}></Button>
-                        : <Button className="imageBtn ol-n bs-2blk mr-3 ml-3" value={key} onClick={this.handleChange} style={{ backgroundImage: `url(${data})` }}></Button>
+                    key ? <Button className="imageBtn h-65 w-65px bc-blk ol-n mr-3 ml-3" value={key} onClick={this.handleChange} style={{ backgroundImage: `url(${data})` }}></Button>
+                        : <Button className="imageBtn h-65 w-65px bc-blk ol-n bs-2blk mr-3 ml-3" value={key} onClick={this.handleChange} style={{ backgroundImage: `url(${data})` }}></Button>
                 ))
                 image = src.map((data, key) => <Carousel.Item id={`carousel_${key}`} className="bc-blk"><img className="d-b-m-a" src={data} alt="image" height="482px" /></Carousel.Item>)
                 image = <Carousel>{image}</Carousel>

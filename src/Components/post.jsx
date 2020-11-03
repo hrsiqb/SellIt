@@ -40,7 +40,7 @@ class Post extends Component {
             render: {}
         }
     }
-    componentWillMount() {
+    componentDidMount() {
         this.state.render.loading = true
         this.checkLoginStatus()
     }
@@ -119,7 +119,8 @@ class Post extends Component {
         if (!(this.state.adData.src)) this.state.adData.src = [noAd.adImage]
         new Promise((res, rej) => insertAddData(res, rej, { ...this.state.adData, iId: key }))
             .then(() => {
-                this.props.history.push('/SellIt/post/success', key)
+                // history.push('/SellIt/post/success', key) //if using BrowserRouter uncomment this line
+                this.props.history.push({ pathname: '/post/success', state: key }) //if using HashRouter uncomment this line
                 this.setState({ render: { ...this.state.render, loading: false } })
             })
             .catch((error) => {
@@ -207,7 +208,7 @@ class Post extends Component {
                         })
                 }
             })
-            .catch(() => this.props.history.push('/SellIt'))
+            .catch(() => this.props.history.push('/'))
     }
     render() {
         var inputDisable = false

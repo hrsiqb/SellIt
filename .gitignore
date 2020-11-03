@@ -2,6 +2,8 @@
 
 #custom
 /bkup
+/firebase
+/favicon_package_v0.16
 
 # dependencies
 /node_modules

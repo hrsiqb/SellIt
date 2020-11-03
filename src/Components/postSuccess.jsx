@@ -13,6 +13,7 @@ export default class Postsuccess extends Component {
         }
     }
     render() {
+        console.log('suc file')
         return (
             this.props.history.location.state ?
             <div className="w-100 w-m-400px m-a mt-5 mb-5 ta-c">
@@ -20,7 +21,7 @@ export default class Postsuccess extends Component {
                 <h4 className="mb-2">Congraulations!</h4>
                 <h6 className="f-b">Ad Posted Successfully</h6>
                 <Button className="bc-blk mb-3 mt-3 w-100 f-cap" variant="contained">
-                    <Link to={`/SellIt/item/${this.props.history.location.state}`} className="fc-w f-b f-16 n-l">
+                    <Link to={`/item/${this.props.history.location.state}`} className="fc-w f-b f-16 n-l">
                         Preview Ad</Link></Button>
             </div>
             : <Error404 />

@@ -7,12 +7,8 @@ class BreadCrumb extends Component {
     render() {
         return (
             <Breadcrumbs aria-label="breadcrumb">
-                <Link color="black" to="/SellIt">
-                    Home
-            </Link>
-                <Link color="inherit" to="/SellIt">
-                    {this.props.type}
-                </Link>
+                <Link className="n-l" to="/SellIt">Home</Link>
+                <Link className="n-l" to="/SellIt">{this.props.type}</Link>
             </Breadcrumbs>
         )
     }
