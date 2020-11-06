@@ -22,6 +22,7 @@ class Item extends Component {
         this.state = {
         }
     }
+    openChatDialog = () => this.setState({ ...this.state, openChatDialog: true })
 
     componentDidMount() {
         let iId = this.props.match.params.id
@@ -31,10 +32,13 @@ class Item extends Component {
                 const itemMedia = addData.src
                 const itemDesc = { description: addData.description, condition: addData.condition, type: addData.category }
                 const itemDetail = { price: addData.price, title: addData.title, createdAt: addData.createdAt, location: addData.location }
-
                 let promise = new Promise((res, rej) => this.props.get_data("GETUSERDATA", res, rej, addData.sellerId))
                 promise.then(sellerData => {
-                    const itemSeller = { memberSince: sellerData.memberSince, name: sellerData.name, photoUrl: sellerData.imageFile, phone: sellerData.phone }
+                    let chatBtn = true
+                    if (this.props.userInfo.isLoggedIn) {
+                        if (sellerData.uId === this.props.userInfo.uId) chatBtn = false
+                    }
+                    const itemSeller = { memberSince: sellerData.memberSince, name: sellerData.name, photoUrl: sellerData.imageFile, phone: sellerData.phone, chatBtn }
                     this.setState({ itemMedia, itemDesc, itemDetail, itemSeller })
                 })
             }

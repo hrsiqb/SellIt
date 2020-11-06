@@ -24,7 +24,7 @@ export default class User extends Component {
                     </div>
                 </div>
                 <div className="d-fr ai-c">
-                    <span class="badge badge-success" className="badge badge-success mt-2px brad-50p"></span>
+                    <span className="badge badge-success" className="badge badge-success mt-2px brad-50p"></span>
                     <p className="m-5px text-secondary"></p>
                 </div>
             </li>

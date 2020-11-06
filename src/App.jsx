@@ -9,6 +9,10 @@ import Home from './Components/home';
 import Post from './Components/post';
 import Chat from './Components/chat';
 import PostSuccess from './Components/postSuccess';
+import { noUser } from './data'
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { getLoginDetails, getUserData } from './config/firebase'
 import {
     Route, Switch,
     HashRouter as Router, // if deploying on sub-directory uncomment this line
@@ -19,23 +23,65 @@ import { connect } from "react-redux";
 import { set_data, get_data } from './store/action'
 
 class App extends Component {
+    constructor() {
+        super()
+        this.state = {
+            render: {},
+            userInfo: {}
+        }
+    }
     componentDidMount() {
-
+        this.checkLoginStatus()
+    }
+    checkLoginStatus = () => {
+        this.state.render.loading = true
+        this.setState(this.state)
+        new Promise((res, rej) => getLoginDetails(res, rej))
+            .then((data) => {
+                if (!data.photoURL) data.photoURL = noUser
+                this.state.userInfo = data
+                if (data.phone) {
+                    this.state.userInfo.isLoggedIn = true
+                    this.state.render.loading = false
+                    this.setState(this.state)
+                }
+                else {
+                    new Promise((res, rej) => getUserData(res, rej, data.uId))
+                        .then((data) => {
+                            this.state.userInfo.phone = data.phone
+                            this.state.userInfo.friends = data.friends
+                            this.state.userInfo.isLoggedIn = true
+                            this.state.render.loading = false
+                            this.setState(this.state)
+                            console.log(this.state)
+                        })
+                        .catch((error) => {
+                            this.state.userInfo.isLoggedIn = false
+                            this.state.render.loading = false
+                            this.setState(this.state)
+                        })
+                }
+            })
+            .catch(() => this.props.history.push('/'))
     }
     render() {
         return (
             <div className="root">
+                <Backdrop className='fc-w zInd-12' open={this.state.render.loading}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+                {/* {!this.state.render.loading && */}
                 <Router>
                     {/* <Header /> */}
                     <Route path='/' component={Header} />
                     <Route path='/' component={CategoriesBar} />
                     {/* <CategoriesBar /> */}
                     <Switch>
-                        <Route exact path={['/', '/home']} children={<Home get_data={this.props.get_data} />} />
-                        <Route path='/item/:id' children={<Item get_data={this.props.get_data} />} />
-                        <Route path='/post/success' component={PostSuccess} />
-                        <Route path='/post' component={withRouter(Post)} />
-                        <Route path='/chat' component={Chat}></Route>
+                        <Route exact path={['/', '/home']} children={<Home userInfo={this.state.userInfo} get_data={this.props.get_data} />} />
+                        <Route path='/item/:id' children={<Item userInfo={this.state.userInfo} get_data={this.props.get_data} />} />
+                        <Route path='/post/success' children={<PostSuccess userInfo={this.state.userInfo} />} />
+                        <Route path='/post' children={withRouter(<Post userInfo={this.state.userInfo} />)} />
+                        <Route path='/chat' children={<Chat userInfo={this.state.userInfo} />}></Route>
                         {/* if the path does'nt match any of the available routes, show error */}
                         <Route path={['/', '/', '/item']} component={Error404} />
                     </Switch>
@@ -43,6 +89,7 @@ class App extends Component {
                     <Route path='/' component={Footer} />
                     {/* <Footer /> */}
                 </Router>
+                {/* } */}
             </div>
         )
     }

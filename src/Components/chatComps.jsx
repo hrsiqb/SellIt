@@ -39,10 +39,16 @@ class MessagesPannel extends Component {
     render() {
         return (
             <div className="vw-70 h-100">
-                <div className="vw-70 h-89p of-y-a of-x-h bu-ch"><div className="pr-4 pl-4 pt-3 pb-3">{this.props.messages}</div></div>
+                <div className="vw-70 h-89p of-y-a of-x-h bu-ch">
+                    <div className="pr-4 pl-4 pt-3 pb-3">{this.props.messages}</div>
+                </div>
                 <div className="d-f jc-sb ai-c vw-70 h-11p bc-gry1 p-0 pl-2 pr-2">
-                    <input type="text" name="newMessage" className="brad-50px w-95 h-38 b-n bs-n ol-n m-0 ml-1 mr-1 p-3" onChange={this.props.onChange} placeholder="Type a message" />
-                    <button className="ol-n bs-n b-n" onclick="sendMessage(this)"><img className="w-22px" src={require('../Images/send-fill.png')} /></button>
+                    <input type="text" className="brad-50px w-95 h-38 b-n bs-n ol-n m-0 ml-1 mr-1 p-3"
+                        placeholder="Type a message" id="newMessage" onChange={this.props.handleChange}
+                        onKeyDown={this.props.handleKeyDown} />
+                    <button className="ol-n bs-n b-n" onClick={this.props.sendMessage}>
+                        <img className="w-22px" src={require('../Images/send-fill.png')} />
+                    </button>
                 </div>
             </div>
         )

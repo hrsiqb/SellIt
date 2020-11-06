@@ -9,6 +9,7 @@ import {
     getLoginDetails,
     getUserData,
     getMessages,
+    insertMessage,
     insertAddData,
     insertUserPhone,
     uploadImage,
@@ -18,7 +19,6 @@ import {
 export default class Chat extends Component {
     constructor(props) {
         super(props)
-
         this.state = {
             userInfo: {},
             render: {},
@@ -30,6 +30,15 @@ export default class Chat extends Component {
     componentDidMount() {
         this.checkLoginStatus()
     }
+    clearInput = () => {
+        if (document.getElementById('newMessage')) document.getElementById('newMessage').value = ''
+    }
+    sendMessage = () => {
+        this.state.storage.newMessage && insertMessage(this.state.userInfo, this.state.storage)
+        this.state.storage.newMessage = ''
+        this.clearInput()
+    }
+    handleKeyDown = e => e.key === 'Enter' && this.sendMessage()
     handleChange = e => this.state.storage.newMessage = e.target.value
     generateChatId = (id) => {
         if (id < this.state.userInfo.uId) return `${id}_${this.state.userInfo.uId}`
@@ -44,6 +53,7 @@ export default class Chat extends Component {
         e.currentTarget.classList.add('bc-gry1')
         this.state.storage.activeUser = e.currentTarget.id
         this.setState(this.state)
+        this.clearInput()
     }
     getUsers = () => {
         if (this.state.userInfo.friends) {
@@ -106,8 +116,8 @@ export default class Chat extends Component {
                 if (this.state.storage.activeUser) {
                     if (!Object.keys(this.state.messages).length) messages = <MessagesSkeleton />
                     else {
-                        let activeChat = this.generateChatId(this.state.storage.activeUser)
-                        console.log(this.state.messages[activeChat])
+                        this.state.storage.activeChat = this.generateChatId(this.state.storage.activeUser)
+                        let activeChat = this.state.storage.activeChat
                         this.state.messages[activeChat].map((data, index) => {
                             let message = {}
                             if (data.fromUid === this.state.userInfo.uId)
@@ -115,7 +125,8 @@ export default class Chat extends Component {
                             else message = { message: data.message, type: 'received' }
                             messages.push(<ChatBubble data={message} index={index} />)
                         })
-                        messages = <MessagesPannel messages={messages} onChange={this.handleChange} />
+                        messages = <MessagesPannel messages={messages} handleChange={this.handleChange}
+                            handleKeyDown={this.handleKeyDown} sendMessage={this.sendMessage} />
                     }
                 }
                 else {
@@ -147,8 +158,10 @@ export default class Chat extends Component {
                     {messages}
                 </div>
                 :
-                <div className="d-f ai-c jc-c vh-88-9 w-100">
-                    no messages yet
+                <div className="d-fc ai-c jc-c vh-88-9 w-100">
+                    <p>No messages yet!</p>
+                    <img src={require("../Images/noChat.jpg")} alt="" />
+                    <p>We’ll keep messages for any item you’re selling in here</p>
                 </div>
         )
     }
