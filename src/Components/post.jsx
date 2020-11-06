@@ -21,7 +21,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { withSnackbar } from 'notistack';
-import history from '../history';
 
 class Post extends Component {
     constructor() {
@@ -41,7 +40,6 @@ class Post extends Component {
         }
     }
     componentDidMount() {
-        this.state.render.loading = true
         this.checkLoginStatus()
     }
     showSnackBar = (msg, variant) => {
@@ -112,7 +110,6 @@ class Post extends Component {
         }
     }
     insertAd = (key) => {
-        console.log(key)
         let createdAt = new Date().toString().split(' ').slice(1, 4).join(' ')
         this.state.adData.createdAt = createdAt
         this.state.adData.sellerId = this.state.userInfo.uId
@@ -191,11 +188,16 @@ class Post extends Component {
         else this.setState({ render: { ...this.state.render, loading: false } })
     }
     checkLoginStatus = () => {
+        this.state.render.loading = true
+        this.setState(this.state)
         new Promise((res, rej) => getLoginDetails(res, rej))
             .then((data) => {
                 if (!data.photoURL) data.photoURL = noUser
                 this.state.userInfo = data
-                if (data.phone) this.state.render.loading = false
+                if (data.phone) {
+                    this.state.render.loading = false
+                    this.setState(this.state)
+                }
                 else {
                     new Promise((res, rej) => getUserData(res, rej, data.uId))
                         .then((data) => {
@@ -207,6 +209,7 @@ class Post extends Component {
                             this.setState({ render: { ...this.state.render, loading: false, isLoggedIn: false } })
                         })
                 }
+
             })
             .catch(() => this.props.history.push('/'))
     }

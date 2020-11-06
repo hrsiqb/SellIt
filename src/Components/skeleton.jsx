@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import Skeleton from '@material-ui/lab/Skeleton';
 import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Skeleton from '@material-ui/lab/Skeleton';
+import React, { Component } from 'react';
 
 class ItemCardSkeleton extends Component {
   render() {
@@ -101,10 +101,55 @@ class ItemSellerSkeleton extends Component {
     )
   }
 }
+
+class UserSkeleton extends Component {
+  render() {
+    return (
+      <section className="d-fr ai-c jc-sb m-3">
+        <section className="d-fr ai-c">
+          <Skeleton variant="circle" width="60px" height="60px" />
+          <section className="ml-2">
+            <Skeleton className="" width="130px" height="25px" />
+            <Skeleton className="" width="150px" height="20px" />
+          </section>
+        </section>
+        <section className="d-fr ai-c">
+          <Skeleton className="mr-4" width="60px" height="20px" />
+          <Skeleton variant="circle" width="20px" height="20px" />
+        </section>
+      </section>
+    )
+  }
+}
+class MessagesSkeleton extends Component {
+  render() {
+    return (
+      <div>
+        <div className="b-l-1gry1 vw-70 h-90p bu-ch">
+          <div className="d-fr jc-fe mr-4"><Skeleton animation='wave' width="380px" height="50px" /></div>
+          <div className="d-fr jc-fe mr-4"><Skeleton animation='wave' width="300px" height="70px" /></div>
+          <div className="ml-4"><Skeleton animation='wave' width="400px" height="60px" /></div>
+          <div className="d-fr jc-fe mr-4"><Skeleton animation='wave' width="300px" height="70px" /></div>
+          <div className="ml-4"><Skeleton animation='wave' width="260px" height="75px" /></div>
+          <div className="d-fr jc-fe mr-4"><Skeleton animation='wave' width="390px" height="55px" /></div>
+          <div className="ml-4"><Skeleton animation='wave' width="290px" height="60px" /></div>
+          <div className="ml-4"><Skeleton animation='wave' width="360px" height="65px" /></div>
+        </div>
+        <div className="d-fr jc-sb ai-c vw-70 h-10p bc-gry1 pl-4 pr-4">
+          <Skeleton animation='wave' width="95%" height="50px" />
+          <Skeleton animation='wave' variant="circle" width="40px" height="40px" />
+        </div>
+      </div>
+    )
+  }
+}
+
 export {
   ItemCardSkeleton,
   ItemMediaSkeleton,
   ItemDescSkeleton,
   ItemDetailSkeleton,
   ItemSellerSkeleton,
-}
+  UserSkeleton,
+  MessagesSkeleton
+};

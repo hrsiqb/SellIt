@@ -19,7 +19,6 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import { FiLogOut, FiChevronDown } from 'react-icons/fi';
 import { GrDown } from 'react-icons/gr';
 import { BsFiles } from 'react-icons/bs';
-import history from '../history';
 
 class Header extends Component {
     constructor() {
@@ -44,6 +43,8 @@ class Header extends Component {
             })
             .catch((error) => {
                 this.setState({ isLoggedIn: false, loading: false })
+                if (this.props.history.location.pathname.includes('post')
+                    || this.props.history.location.pathname.includes('chat')) this.props.history.push('/')
             })
     }
     handleLogout = () => {
@@ -52,9 +53,8 @@ class Header extends Component {
             .then(() => {
                 this.setState({ isLoggedIn: false, loading: false })
                 this.showSnackBar('Logout successful', 'success')
-                if (this.props.history.location.pathname.includes('post')) {
-                    this.props.history.push('/')
-                }
+                if (this.props.history.location.pathname.includes('post')
+                    || this.props.history.location.pathname.includes('chat')) this.props.history.push('/')
             })
             .catch((error) => {
                 this.setState({ loading: false })
@@ -87,7 +87,7 @@ class Header extends Component {
     }
     render() {
         return (
-            <Navbar sticky="top" bg="light" className="b-b-2gry" expand="lg">
+            <Navbar sticky="top" bg="light" className="b-b-2gry mn-vh-10" expand="lg">
                 <Backdrop className='fc-w zInd-12' open={this.state.loading}>
                     <CircularProgress color="inherit" />
                 </Backdrop>
@@ -103,7 +103,8 @@ class Header extends Component {
                         </Button>
                         {this.state.isLoggedIn ? (
                             <React.Fragment>
-                                <IconButton className="btn ml-3 ol-n bs-n" aria-label="chat">
+                                <IconButton className="btn ml-3 ol-n bs-n" aria-label="chat"
+                                    onClick={() => this.props.history.push('/chat')}>
                                     <ChatBubbleOutlineIcon />
                                 </IconButton>
                                 <IconButton className="btn mr-2 ol-n bs-n" aria-label="notification">
@@ -121,7 +122,7 @@ class Header extends Component {
                                         <section className="d-fr ai-c h-p">
                                             <Avatar className="sellerAvatar" alt="userAvatar" src={this.state.photoURL} />
                                             <section className="ml-3">
-                                                <p className="f-22 f-b7 m-0">{this.state.displayName}</p>
+                                                <p className="f-22 f-b7 m-0 f-cap">{this.state.displayName}</p>
                                                 <p className="text-secondary f-14 m-0">{this.state.email}</p>
                                             </section>
                                         </section>
@@ -130,9 +131,8 @@ class Header extends Component {
                                         <Dropdown.Item className="p-2 pl-0" onClick={this.handleLogout}><FiLogOut className="mr-3 f-22" />Logout</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
-                                <Button className="mr-3 b-2blk f-20 ol-n bs-n" variant="outlined" color="primary">
-                                    <Link className="n-l f-b" to="/post">+SELL</Link>
-                                </Button>
+                                <Button onClick={() => this.props.history.push('/post')} className="mr-3 b-2blk f-20 ol-n bs-n f-b" 
+                                variant="outlined">+SELL</Button>
                             </React.Fragment>)
                             : (
                                 <React.Fragment>
@@ -140,7 +140,8 @@ class Header extends Component {
                                         <Button className="f-b fc-blk ol-n pr-3 pl-3" onClick={() => this.openDialog('login')}>Login</Button>
                                         <Button className="f-b fc-blk ol-n pl-3 pr-3" onClick={() => this.openDialog('register')}>SignUp</Button>
                                     </ButtonGroup>
-                                    <Button className="mr-3 b-2blk f-20 ol-n bs-n f-b" onClick={() => this.openDialog('login')} variant="outlined">+SELL</Button>
+                                    <Button className="mr-3 b-2blk f-20 ol-n bs-n f-b" onClick={() => this.openDialog('login')}
+                                    >+SELL</Button>
                                 </React.Fragment>
                             )}</Navbar.Collapse>
                     <LoginDialogComp onClose={(check) => this.closeDialog(check)} open={this.state.openLoginDialog} />

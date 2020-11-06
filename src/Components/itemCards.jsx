@@ -190,7 +190,7 @@ class ItemSellerCard extends Component {
                         <section className="ml-2">
                             {this.props.itemSeller ?
                                 <React.Fragment>
-                                    <p className="f-16 f-b7 m-0">{name}</p>
+                                    <p className="f-16 f-b7 m-0 f-cap">{name}</p>
                                     <p className="text-secondary f-12 f-b6 m-0">{`Member since ${memberSince}`}</p>
                                 </React.Fragment>
                                 :

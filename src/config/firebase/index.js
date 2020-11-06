@@ -73,10 +73,6 @@ const insertUserPhone = (res, rej, uId, phone) => {
 }
 const insertUserData = (res, rej, provider, data) => {
   if (data.imageFile && provider === 'password') {
-    // firebase.storage().ref().child(`images/userMedia/${data.uId}`).put(data.imageFile)
-    //   .then((snapshot) => {
-    //     snapshot.ref.getDownloadURL()
-    //       .then((url) => {
     new Promise((resolve, reject) => uploadImage(resolve, reject,
       { folder: 'userMedia', image: data.imageFile, name: data.uId }))
       .then((url) => {
@@ -86,8 +82,6 @@ const insertUserData = (res, rej, provider, data) => {
           .catch(error => rej(error))
       })
       .catch(error => rej(error))
-    //     })
-    // })
   }
   else {
     firebase.database().ref(`Users/${data.uId}`).set(data)
@@ -128,6 +122,7 @@ const getLoginDetails = (res, rej) => {
                 displayName: data.name,
                 email: user.email,
                 photoURL: data.imageFile,
+                friends: data.friends,
                 phone: data.phone,
                 uId: user.uid,
                 isLoggedIn: true
@@ -157,9 +152,6 @@ var generateFirebaseKey = (ref) => {
   return firebase.database().ref(ref).push().key //generate a key for the Messages object
 }
 var insertAddData = (res, rej, data) => {
-  // let key = firebase.database().ref('All Ads').push().key //generate a key for the Messages object
-  // data.iId = key
-  console.log(data)
   firebase.database().ref(`All Ads/${data.iId}`).set(data)
     .then(result => res(result))
     .catch(error => rej(error))
@@ -209,23 +201,21 @@ const getAllAdds = (firstRun, addsToAppend, mainResolve, mainReject) => {
 }
 
 const getAddData = (resolve, reject, iId) => {
-  // var ref = firebase.database().ref("All Ads")
-  // ref.orderByChild('iId').equalTo(iId).once('value')
-  // .then((returnedData) => {
-  //   resolve(returnedData.val())
-  // })
-
   firebase.database().ref(`All Ads/${iId}`).once('value')
-    .then((returnedData) => {
-      resolve(returnedData.val())
-    })
+    .then((returnedData) => resolve(returnedData.val()))
 }
 
 const getUserData = (resolve, reject, uId) => {
   firebase.database().ref(`Users/${uId}`).once('value')
-    .then((returnedData) => {
-      resolve(returnedData.val())
+    .then((returnedData) => resolve(returnedData.val()))
+}
+const getMessages = (data, callback) => {
+  data.chatIds.map(chatId => {
+    firebase.database().ref(`Messages/${chatId}`).on('child_added', snapshot => {
+      // let data = snapshot.val()
+      if (snapshot.val()) callback(chatId, snapshot.val())
     })
+  })
 }
 export {
   storage,
@@ -243,5 +233,6 @@ export {
   insertUserPhone,
   logout,
   uploadImage,
-  generateFirebaseKey
+  generateFirebaseKey,
+  getMessages
 }

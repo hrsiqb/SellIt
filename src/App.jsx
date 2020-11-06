@@ -7,6 +7,7 @@ import Item from './Components/item';
 import { Error404 } from './Components/error';
 import Home from './Components/home';
 import Post from './Components/post';
+import Chat from './Components/chat';
 import PostSuccess from './Components/postSuccess';
 import {
     Route, Switch,
@@ -34,6 +35,7 @@ class App extends Component {
                         <Route path='/item/:id' children={<Item get_data={this.props.get_data} />} />
                         <Route path='/post/success' component={PostSuccess} />
                         <Route path='/post' component={withRouter(Post)} />
+                        <Route path='/chat' component={Chat}></Route>
                         {/* if the path does'nt match any of the available routes, show error */}
                         <Route path={['/', '/', '/item']} component={Error404} />
                     </Switch>

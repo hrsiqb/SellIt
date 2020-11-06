@@ -1,18 +1,21 @@
-import React,{Component} from 'react';
+import React, { Component } from 'react';
 
-import {Navbar, Nav, NavDropdown, Form, FormControl} from 'react-bootstrap'
+import { Navbar, Nav, NavDropdown, Form, FormControl } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsEnvelope } from 'react-icons/bs';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 import { CgWebsite } from 'react-icons/cg';
 import { FiPhone } from 'react-icons/fi';
-import { RiFacebookCircleLine, RiYoutubeLine, RiInstagramLine, RiTwitterLine  } from 'react-icons/ri';
+import { RiFacebookCircleLine, RiYoutubeLine, RiInstagramLine, RiTwitterLine } from 'react-icons/ri';
 
-class Footer extends Component{
-    render(){
-        return(
+class Footer extends Component {
+    render() {
+        return (
+            (!(this.props.history.location.pathname.includes('post'))
+                && !(this.props.history.location.pathname.includes('chat')))
+            &&
             <div>
-                <div className="col-md-12 pl-5 pr-5 pt-2 pb-3" style={{backgroundColor: "rgb(0, 44, 102)"}}>
+                <div className="col-md-12 pl-5 pr-5 pt-2 pb-3" style={{ backgroundColor: "rgb(0, 44, 102)" }}>
                     <div className="row">
                         <div className="col-md-3 text-light mt-2">
                             <h6 className="display-6 text-light"><b>Top Categories</b></h6>
@@ -54,6 +57,7 @@ class Footer extends Component{
                     &copy;2020 Copyright, SellIt
                 </div>
             </div>
-        )}
+        )
+    }
 }
 export default Footer;
