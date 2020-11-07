@@ -214,7 +214,7 @@ const getMessages = (data, callback) => {
     firebase.database().ref(`Messages/${chatId}`).on('child_added', snapshot => snapshot.val() && callback(chatId, snapshot.val()))
   })
 }
-const insertMessage = (userInfo, chatInfo) => {
+const insertMessage = (userInfo, chatInfo, res = false, rej = false) => {
   let ref = `Messages/${chatInfo.activeChat}`
   let key = generateFirebaseKey(ref)
   firebase.database().ref(`${ref}/${key}`).set(
@@ -223,6 +223,11 @@ const insertMessage = (userInfo, chatInfo) => {
       fromUid: userInfo.uId,
       key
     })
+    .then(result => res && res('done'))
+    .catch(error => rej && rej(error.message))
+}
+const addFriend = (data) => {
+  firebase.database().ref(`Users/${data.uId}/friends/${data.fId}`).set(data.fId)
 }
 export {
   storage,
@@ -242,5 +247,6 @@ export {
   uploadImage,
   generateFirebaseKey,
   insertMessage,
+  addFriend,
   getMessages
 }

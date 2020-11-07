@@ -24,40 +24,25 @@ class Header extends Component {
     constructor() {
         super()
         this.state = {
+            userInfo: {},
             openLoginDialog: false,
             openRegisterDialog: false,
-            isLoggedIn: false,
             loading: false
         }
-    }
-    componentDidMount() {
-        this.setState({ loading: true })
-        this.checkLoginStatus()
-    }
-    checkLoginStatus = () => {
-        new Promise((res, rej) => getLoginDetails(res, rej))
-            .then((data) => {
-                this.state.loading = false
-                if (!data.photoURL) data.photoURL = noUser.userPrimary
-                this.setState(data)
-            })
-            .catch((error) => {
-                this.setState({ isLoggedIn: false, loading: false })
-                if (this.props.history.location.pathname.includes('post')
-                    || this.props.history.location.pathname.includes('chat')) this.props.history.push('/')
-            })
     }
     handleLogout = () => {
         this.state.loading = true
         new Promise((res, rej) => logout(res, rej))
             .then(() => {
-                this.setState({ isLoggedIn: false, loading: false })
+                this.setState({ ...this.state, isLoggedIn: false, loading: false })
+                this.props.loginCallback()
                 this.showSnackBar('Logout successful', 'success')
                 if (this.props.history.location.pathname.includes('post')
                     || this.props.history.location.pathname.includes('chat')) this.props.history.push('/')
             })
             .catch((error) => {
-                this.setState({ loading: false })
+                this.setState({ ...this.state, loading: false })
+
                 this.showSnackBar(error.message, 'danger')
             })
     }
@@ -82,10 +67,12 @@ class Header extends Component {
     closeDialog(callCheck = false) {
         this.state.openRegisterDialog = false
         this.state.openLoginDialog = false
-        if (callCheck) this.checkLoginStatus()
+        if (callCheck) this.props.loginCallback()
         else this.setState(this.state)
     }
     render() {
+        this.props.userInfo.isLoggedIn ? this.state.userInfo = this.props.userInfo
+            : this.state.userInfo.isLoggedIn = false
         return (
             <Navbar sticky="top" bg="light" className="b-b-2gry mn-vh-10" expand="lg">
                 <Backdrop className='fc-w zInd-12' open={this.state.loading}>
@@ -101,7 +88,7 @@ class Header extends Component {
                         <Button className="ol-n bc-blk">
                             <SearchIcon style={{ color: "white" }} />
                         </Button>
-                        {this.state.isLoggedIn ? (
+                        {this.state.userInfo.isLoggedIn ? (
                             <React.Fragment>
                                 <IconButton className="btn ml-3 ol-n bs-n" aria-label="chat"
                                     onClick={() => this.props.history.push('/chat')}>
@@ -114,16 +101,16 @@ class Header extends Component {
                                 <Dropdown alignRight>
                                     <Dropdown.Toggle className="d-n-a bc-trn mr-4 p-0 b-n bs-n" id="user-dropdown" >
                                         <div className="w-100 h-100 d-fr ai-c">
-                                            <Avatar className="" alt="user" src={this.state.photoURL} />
+                                            <Avatar className="" alt="user" src={this.state.userInfo.photoURL} />
                                             <GrDown className="f-22 ml-1" />
                                         </div>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu className="mt-1 p-3">
                                         <section className="d-fr ai-c h-p">
-                                            <Avatar className="sellerAvatar" alt="userAvatar" src={this.state.photoURL} />
+                                            <Avatar className="sellerAvatar" alt="userAvatar" src={this.state.userInfo.photoURL} />
                                             <section className="ml-3">
-                                                <p className="f-22 f-b7 m-0 f-cap">{this.state.displayName}</p>
-                                                <p className="text-secondary f-14 m-0">{this.state.email}</p>
+                                                <p className="f-22 f-b7 m-0 f-cap">{this.state.userInfo.displayName}</p>
+                                                <p className="text-secondary f-14 m-0">{this.state.userInfo.email}</p>
                                             </section>
                                         </section>
                                         <Dropdown.Divider />
@@ -131,8 +118,8 @@ class Header extends Component {
                                         <Dropdown.Item className="p-2 pl-0" onClick={this.handleLogout}><FiLogOut className="mr-3 f-22" />Logout</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
-                                <Button onClick={() => this.props.history.push('/post')} className="mr-3 b-2blk f-20 ol-n bs-n f-b" 
-                                variant="outlined">+SELL</Button>
+                                <Button onClick={() => this.props.history.push('/post')} className="mr-3 b-2blk f-20 ol-n bs-n f-b"
+                                    variant="outlined">+SELL</Button>
                             </React.Fragment>)
                             : (
                                 <React.Fragment>

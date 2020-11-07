@@ -12,6 +12,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import EmailIcon from '@material-ui/icons/Email';
+import { GrChat } from 'react-icons/gr'
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { signUpWithEmail, insertUserData, loginWithEmail, loginWithFacebook, loginWithGoogle } from '../config/firebase'
 import Backdrop from '@material-ui/core/Backdrop';
@@ -19,6 +20,52 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { FaFacebookF, FaGooglePlusG } from 'react-icons/fa';
 import { withSnackbar } from 'notistack';
 
+class SendMessageDialog extends Component {
+  constructor() {
+    super()
+    this.state = {
+
+    }
+  }
+  handleMessage = () => {
+    if (this.state.newMessage) {
+      this.state.loading = true
+      this.setState(this.state)
+      this.props.sendMessage(this.state.newMessage)
+    }
+  }
+  handleKeyDown = e => e.key === 'Enter' && this.handleMessage()
+  handleChange = (e) => this.state.newMessage = e.target.value
+  render() {
+    return (
+      <Dialog onClose={this.props.onClose} aria-labelledby="simple-dialog-title" open={this.props.open}>
+        <Backdrop className='fc-w zInd-12' open={this.state.loading} >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+        <div style={{ width: "400px" }}>
+          <List className="p-3 ta-c">
+            <h3 className="ta-c mb-2 f-b">Send Message</h3>
+            <hr className="bt-g" />
+            <Grid className="mb-2 pr-1 pl-1" container spacing={1} alignItems="flex-end">
+              <Grid className="mb-2" container spacing={1} alignItems="flex-end">
+                <Grid item className="mb-1">
+                  <GrChat />
+                </Grid>
+                <Grid item className="w-92">
+                  <TextField error={this.state.emailError} onChange={this.handleChange}
+                    onKeyDown={this.handleKeyDown} fullWidth={true} label="Message" />
+                </Grid>
+              </Grid>
+            </Grid>
+            <Button variant="outlined" className="fc-blk ol-n b-2blk f-b mt-6 mb-6 f-16 f-b w-95 h-42"
+              onClick={this.handleMessage}>
+              Send</Button>
+          </List>
+        </div>
+      </Dialog>
+    )
+  }
+}
 class LoginDialog extends Component {
   constructor() {
     super()
@@ -523,4 +570,4 @@ class RegisterDialog extends Component {
 }
 const LoginDialogComp = withSnackbar(LoginDialog)
 const RegisterDialogComp = withSnackbar(RegisterDialog)
-export { LoginDialogComp, RegisterDialogComp }
+export { LoginDialogComp, RegisterDialogComp, SendMessageDialog }

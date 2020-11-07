@@ -6,18 +6,25 @@ import { Error404 } from './error';
 
 export default class Postsuccess extends Component {
     render() {
+        let itemId = null
+        if (this.props.history.location.search) itemId = this.props.history.location.search.substring(1)
         return (
-            this.props.history.location.state ?
-                <div className="w-100 w-m-400px m-a mt-5 mb-5 ta-c">
-                    <FcApproval className="f-84 mb-3" />
-                    <h4 className="mb-2">Congraulations!</h4>
-                    <h6 className="f-b">Ad Posted Successfully</h6>
-                    <Button onClick={() => this.props.history.push(`/item/${this.props.history.location.state}`)}
-                        className="bc-blk mb-3 mt-3 w-100 f-cap fc-w f-b f-16" variant="contained">
-                        Preview Ad
-                    </Button>
+            itemId ?
+                <div className="w-100 w-m-400px vh-88 m-a ta-c">
+                    <div className="pos-r t-30p">
+                        <FcApproval className="f-84 mb-3" />
+                        <h4 className="mb-2">Congraulations!</h4>
+                        <h6 className="f-b">Ad Posted Successfully</h6>
+                        <Button onClick={() => this.props.history.push(`/item/${itemId}`)}
+                            className="bc-blk mb-3 mt-3 w-100 f-cap fc-w f-b f-16" variant="contained">
+                            Preview Ad
+                        </Button>
+                    </div>
                 </div>
-                : <Error404 />
+                :
+                <div style={{marginTop: '12%'}}>
+                    <Error404 />
+                </div>
         )
     }
 }

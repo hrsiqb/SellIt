@@ -21,6 +21,7 @@ import {
 } from "react-router-dom"
 import { connect } from "react-redux";
 import { set_data, get_data } from './store/action'
+import history from './history'
 
 class App extends Component {
     constructor() {
@@ -38,7 +39,7 @@ class App extends Component {
         this.setState(this.state)
         new Promise((res, rej) => getLoginDetails(res, rej))
             .then((data) => {
-                if (!data.photoURL) data.photoURL = noUser
+                if (!data.photoURL) data.photoURL = noUser.userPrimary
                 this.state.userInfo = data
                 if (data.phone) {
                     this.state.userInfo.isLoggedIn = true
@@ -53,7 +54,6 @@ class App extends Component {
                             this.state.userInfo.isLoggedIn = true
                             this.state.render.loading = false
                             this.setState(this.state)
-                            console.log(this.state)
                         })
                         .catch((error) => {
                             this.state.userInfo.isLoggedIn = false
@@ -62,7 +62,11 @@ class App extends Component {
                         })
                 }
             })
-            .catch(() => this.props.history.push('/'))
+            .catch(() => {
+                this.state.userInfo.isLoggedIn = false
+                this.state.render.loading = false
+                this.setState(this.state)
+            })
     }
     render() {
         return (
@@ -70,26 +74,25 @@ class App extends Component {
                 <Backdrop className='fc-w zInd-12' open={this.state.render.loading}>
                     <CircularProgress color="inherit" />
                 </Backdrop>
-                {/* {!this.state.render.loading && */}
                 <Router>
                     {/* <Header /> */}
-                    <Route path='/' component={Header} />
+                    <Route path='/' children={<Header history={this.props.history} loginCallback={this.checkLoginStatus}
+                        userInfo={this.state.userInfo} />} />
                     <Route path='/' component={CategoriesBar} />
                     {/* <CategoriesBar /> */}
                     <Switch>
-                        <Route exact path={['/', '/home']} children={<Home userInfo={this.state.userInfo} get_data={this.props.get_data} />} />
-                        <Route path='/item/:id' children={<Item userInfo={this.state.userInfo} get_data={this.props.get_data} />} />
-                        <Route path='/post/success' children={<PostSuccess userInfo={this.state.userInfo} />} />
-                        <Route path='/post' children={withRouter(<Post userInfo={this.state.userInfo} />)} />
-                        <Route path='/chat' children={<Chat userInfo={this.state.userInfo} />}></Route>
+                        <Route exact path={['/', '/home']} children={<Home history={this.props.history} userInfo={this.state.userInfo} get_data={this.props.get_data} />} />
+                        <Route path='/item/:id' children={<Item history={this.props.history} userInfo={this.state.userInfo} get_data={this.props.get_data} />} />
+                        <Route path='/post/success' children={<PostSuccess history={this.props.history} userInfo={this.state.userInfo} />} />
+                        <Route path='/post' children={<Post history={this.props.history} userInfo={this.state.userInfo} />} />
+                        <Route path='/chat' children={<Chat history={this.props.history} userInfo={this.state.userInfo} />} />
                         {/* if the path does'nt match any of the available routes, show error */}
                         <Route path={['/', '/', '/item']} component={Error404} />
                     </Switch>
 
-                    <Route path='/' component={Footer} />
                     {/* <Footer /> */}
+                    <Route path='/' component={Footer} />
                 </Router>
-                {/* } */}
             </div>
         )
     }

@@ -177,41 +177,20 @@ class ItemSellerCard extends Component {
         photoUrl ? userImage = photoUrl : userImage = noUser.userSecondary
         return (
             <Card className="itemSeller-card m-0" variant="outlined" >
-                <CardContent>
-                    {this.props.itemSeller ?
-                        <p className="mb-2 f-23 f-b5">Seller description</p>
-                        :
-                        <Skeleton className="mb-2" width="40%" height="40px" />}
+                <CardContent className="pb-3">
+                    <p className="mb-2 f-23 f-b5">Seller description</p>
                     <section className="d-fr ai-c">
-                        {this.props.itemSeller ?
-                            <Avatar className="sellerAvatar" alt="userAvatar" src={userImage} />
-                            :
-                            <Skeleton variant="circle" width="60px" height="60px" />}
+                        <Avatar className="sellerAvatar" alt="userAvatar" src={userImage} />
                         <section className="ml-2">
-                            {this.props.itemSeller ?
-                                <React.Fragment>
-                                    <p className="f-16 f-b7 m-0 f-cap">{name}</p>
-                                    <p className="text-secondary f-12 f-b6 m-0">{`Member since ${memberSince}`}</p>
-                                </React.Fragment>
-                                :
-                                <React.Fragment>
-                                    <Skeleton width="110px" height="25px" />
-                                    <Skeleton width="130px" height="20px" />
-                                </React.Fragment>}
+                            <p className="f-16 f-b7 m-0 f-cap">{name}</p>
+                            <p className="text-secondary f-12 f-b6 m-0">{`Member since ${memberSince}`}</p>
                         </section>
                     </section>
-                    {this.props.itemSeller ?
-                        <Button className="bc-blk fc-w f-b mb-2 mt-3 pt-2 pb-2 w-100" variant="contained">Chat With Seller</Button>
-                        :
-                        <Skeleton className="mb-2" width="100%" height="70px" />}
+                    {(this.props.itemSeller.chatBtn) &&
+                        <Button className="bc-blk fc-w f-b mb-2 mt-3 pt-2 pb-2 w-100" variant="contained"
+                            onClick={this.props.itemSeller.chatBtn}>Chat With Seller</Button>}
                     <section className="d-fr jc-c">
-                        {this.props.itemSeller ?
-                            <React.Fragment>
-                                <p className="mt-3 mb-3">
-                                    <FiPhone className="mr-2" />{phone}
-                                </p>
-                            </React.Fragment> :
-                            <Skeleton width="40%" />}
+                        <p className="mt-3 mb-3"><FiPhone className="mr-2" />{phone}</p>
                     </section>
                 </CardContent>
             </Card>

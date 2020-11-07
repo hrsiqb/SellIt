@@ -28,7 +28,18 @@ export default class Chat extends Component {
         }
     }
     componentDidMount() {
-        this.checkLoginStatus()
+        this.state.userInfo.isLoggedIn === true && this.getUsers()
+        // this.checkLoginStatus()
+    }
+    componentDidUpdate() {
+        console.log('didupdate')
+        if (!this.state.users.length)
+            this.state.userInfo.isLoggedIn === true && this.getUsers()
+    }
+    shouldComponentUpdate(newProps, newState) {
+        console.log(newState, '=', this.state)
+        return newProps.userInfo.isLoggedIn !== this.state.userInfo.isLoggedIn
+            || this.state !== newState
     }
     clearInput = () => {
         if (document.getElementById('newMessage')) document.getElementById('newMessage').value = ''
@@ -57,17 +68,16 @@ export default class Chat extends Component {
     }
     getUsers = () => {
         if (this.state.userInfo.friends) {
-            this.state.userInfo.friends.map(uId => {
+            var friends = Object.values(this.state.userInfo.friends)
+            friends.map(uId => {
                 new Promise((res, rej) => getUserData(res, rej, uId))
                     .then(data => {
                         this.state.users.push(data)
-                        if (this.state.users.length === this.state.userInfo.friends.length) {
-                            this.setState(this.state)
+                        if (this.state.users.length === friends.length) {
                             if (!this.state.userInfo.chatIds) this.state.userInfo.chatIds = []
-                            this.state.userInfo.friends.map(data => {
-                                this.state.userInfo.chatIds.push(this.generateChatId(data))
-                            })
+                            friends.map(data => this.state.userInfo.chatIds.push(this.generateChatId(data)))
                             getMessages(this.state.userInfo, (chatId, data) => {
+                                console.log('get')
                                 if (!this.state.messages[chatId]) this.state.messages[chatId] = []
                                 this.state.messages[chatId].push(data)
                                 this.setState(this.state)
@@ -78,55 +88,72 @@ export default class Chat extends Component {
         }
         else this.setState({ render: { ...this.state.render, noUsers: true } })
     }
-    checkLoginStatus = () => {
-        this.state.render.loading = true
-        this.setState(this.state)
-        new Promise((res, rej) => getLoginDetails(res, rej))
-            .then((data) => {
-                if (!data.photoURL) data.photoURL = noUser
-                this.state.userInfo = data
-                if (data.phone) {
-                    this.state.render.loading = false
-                    this.setState(this.state)
-                    this.getUsers()
-                }
-                else {
-                    new Promise((res, rej) => getUserData(res, rej, data.uId))
-                        .then((data) => {
-                            this.state.userInfo.phone = data.phone
-                            this.state.userInfo.friends = data.friends
-                            this.state.render.loading = false
-                            this.setState(this.state)
-                            this.getUsers()
-                        })
-                        .catch((error) => {
-                            this.setState({ render: { ...this.state.render, loading: false, isLoggedIn: false } })
-                        })
-                }
-            })
-            .catch(() => this.props.history.push('/'))
-    }
+    // checkLoginStatus = () => {
+    //     this.state.render.loading = true
+    //     this.setState(this.state)
+    //     new Promise((res, rej) => getLoginDetails(res, rej))
+    //         .then((data) => {
+    //             if (!data.photoURL) data.photoURL = noUser
+    //             this.state.userInfo = data
+    //             if (data.phone) {
+    //                 this.state.render.loading = false
+    //                 this.setState(this.state)
+    //                 this.getUsers()
+    //             }
+    //             else {
+    //                 new Promise((res, rej) => getUserData(res, rej, data.uId))
+    //                     .then((data) => {
+    //                         this.state.userInfo.phone = data.phone
+    //                         this.state.userInfo.friends = data.friends
+    //                         this.state.render.loading = false
+    //                         this.setState(this.state)
+    //                         this.getUsers()
+    //                     })
+    //                     .catch((error) => {
+    //                         this.setState({ render: { ...this.state.render, loading: false, isLoggedIn: false } })
+    //                     })
+    //             }
+    //         })
+    //         .catch(() => this.props.history.push('/'))
+    // }
     render() {
+        if (this.props.userInfo.isLoggedIn !== false) this.state.userInfo = this.props.userInfo
+        else this.props.history.push('/')
         let users = []
         let messages = []
         if (!this.state.render.noUsers) {
             if (this.state.users.length) {
-                users = this.state.users.map((data, index) =>
-                    <User index={index} onClick={this.handleUser} data={data} />)
+                var bColor = ''
+                users = this.state.users.map((data, index) => {
+                    if (this.props.history.location.search) {
+                        let user = this.props.history.location.search.substring(1)
+                        if (user === data.uId) {
+                            bColor = 'bc-gry1'
+                            this.state.storage.activeUser = user
+                            this.props.history.push({ search: null })
+                        }
+                    }
+                    return <User index={index} onClick={this.handleUser} data={data} bColor={bColor} />
+                })
                 if (this.state.storage.activeUser) {
                     if (!Object.keys(this.state.messages).length) messages = <MessagesSkeleton />
                     else {
                         this.state.storage.activeChat = this.generateChatId(this.state.storage.activeUser)
                         let activeChat = this.state.storage.activeChat
-                        this.state.messages[activeChat].map((data, index) => {
-                            let message = {}
-                            if (data.fromUid === this.state.userInfo.uId)
-                                message = { message: data.message, type: 'sent' };
-                            else message = { message: data.message, type: 'received' }
-                            messages.push(<ChatBubble data={message} index={index} />)
-                        })
-                        messages = <MessagesPannel messages={messages} handleChange={this.handleChange}
-                            handleKeyDown={this.handleKeyDown} sendMessage={this.sendMessage} />
+                        console.log(activeChat, this.state.messages[activeChat])
+                        if (this.state.messages[activeChat]) {
+                            document.getElementById(this.state.storage.activeUser).classList.add('bc-gry1')
+                            console.log(this.state.messages[activeChat])
+                            this.state.messages[activeChat].map((data, index) => {
+                                let message = {}
+                                if (data.fromUid === this.state.userInfo.uId)
+                                    message = { message: data.message, type: 'sent' };
+                                else message = { message: data.message, type: 'received' }
+                                messages.push(<ChatBubble data={message} index={index} />)
+                            })
+                            messages = <MessagesPannel messages={messages} handleChange={this.handleChange}
+                                handleKeyDown={this.handleKeyDown} sendMessage={this.sendMessage} />
+                        }
                     }
                 }
                 else {

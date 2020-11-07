@@ -6,14 +6,33 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux'
 import store from './store'
 import { SnackbarProvider } from 'notistack';
+import history from "./history";
+
+import {
+  Route,
+  HashRouter as Router
+} from "react-router-dom"
+// const AppContainer = () => (
+//   <Router history={history}>
+//     <Provider store={store}>
+//       <Route path="/" component={App} />
+//     </Provider>
+//   </Router>
+// );
 
 ReactDOM.render(
   <SnackbarProvider maxSnack={7}>
-    <Provider store={store}>
+    {/* <Provider store={store}>
       <React.StrictMode>
         <App />
       </React.StrictMode>
-    </Provider>
+    </Provider> */}
+
+    <Router history={history}>
+      <Provider store={store}>
+        <Route path="/" component={App} />
+      </Provider>
+    </Router>
   </SnackbarProvider>,
   document.getElementById('root')
 );

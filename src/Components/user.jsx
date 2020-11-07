@@ -10,8 +10,9 @@ export default class User extends Component {
         }
     }
     render() {
+        const bColor = this.props.bColor
         return (
-            <li className="b-b-1gry1 lst-n vw-m-30 d-fr jc-sb p-2 h-p h-bc-gry1"
+            <li className={`${bColor} b-b-1gry1 lst-n vw-m-30 d-fr jc-sb p-2 h-p h-bc-gry1`}
                 onClick={this.props.onClick} id={this.props.data.uId}>
                 <div className="d-fr">
                     <div className="d-f mr-3 pos-r">

@@ -8,6 +8,7 @@ import { RiImageAddFill } from 'react-icons/ri';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import { FiPhone } from 'react-icons/fi';
+import { withRouter } from 'react-router-dom'
 import {
     getLoginDetails,
     getUserData,
@@ -40,7 +41,6 @@ class Post extends Component {
         }
     }
     componentDidMount() {
-        this.checkLoginStatus()
     }
     showSnackBar = (msg, variant) => {
         this.props.enqueueSnackbar(msg, {
@@ -117,8 +117,7 @@ class Post extends Component {
         new Promise((res, rej) => insertAddData(res, rej, { ...this.state.adData, iId: key }))
             .then(() => {
                 // history.push('/SellIt/post/success', key) //if using BrowserRouter uncomment this line
-                this.props.history.push({ pathname: '/post/success', state: key }) //if using HashRouter uncomment this line
-                this.setState({ render: { ...this.state.render, loading: false } })
+                this.props.history.push({ pathname: '/post/success', search: key }) //if using HashRouter uncomment this line
             })
             .catch((error) => {
                 this.showSnackBar(error.message, 'error')
@@ -187,33 +186,34 @@ class Post extends Component {
         }
         else this.setState({ render: { ...this.state.render, loading: false } })
     }
-    checkLoginStatus = () => {
-        this.state.render.loading = true
-        this.setState(this.state)
-        new Promise((res, rej) => getLoginDetails(res, rej))
-            .then((data) => {
-                if (!data.photoURL) data.photoURL = noUser
-                this.state.userInfo = data
-                if (data.phone) {
-                    this.state.render.loading = false
-                    this.setState(this.state)
-                }
-                else {
-                    new Promise((res, rej) => getUserData(res, rej, data.uId))
-                        .then((data) => {
-                            this.state.userInfo.phone = data.phone
-                            this.state.render.loading = false
-                            this.setState(this.state)
-                        })
-                        .catch((error) => {
-                            this.setState({ render: { ...this.state.render, loading: false, isLoggedIn: false } })
-                        })
-                }
-
-            })
-            .catch(() => this.props.history.push('/'))
-    }
+    // checkLoginStatus = () => {
+    //     this.state.render.loading = true
+    //     this.setState(this.state)
+    //     new Promise((res, rej) => getLoginDetails(res, rej))
+    //         .then((data) => {
+    //             if (!data.photoURL) data.photoURL = noUser
+    //             this.state.userInfo = data
+    //             if (data.phone) {
+    //                 this.state.render.loading = false
+    //                 this.setState(this.state)
+    //             }
+    //             else {
+    //                 new Promise((res, rej) => getUserData(res, rej, data.uId))
+    //                     .then((data) => {
+    //                         this.state.userInfo.phone = data.phone
+    //                         this.state.render.loading = false
+    //                         this.setState(this.state)
+    //                     })
+    //                     .catch((error) => {
+    //                         this.setState({ render: { ...this.state.render, loading: false, isLoggedIn: false } })
+    //                     })
+    //             }
+    //         })
+    //         .catch(() => this.props.history.push('/'))
+    // }
     render() {
+        if (this.props.userInfo.isLoggedIn !== false) this.state.userInfo = this.props.userInfo
+        else this.props.history.push('/')
         var inputDisable = false
         if (this.state.storage.image) { if (this.state.storage.image.length >= 4) inputDisable = true }
         var categoriesTab = []
@@ -228,12 +228,12 @@ class Post extends Component {
         var images = []
         var numImages = 0
         if (this.state.storage.imageUrl) {
-            this.state.storage.imageUrl.map((data) => images.push(<img className="h-100px w-100px mr-2" src={data} />))
+            this.state.storage.imageUrl.map((data) => images.push(<img className="h-100px w-100px mr-2 mt-2" src={data} />))
             numImages = this.state.storage.imageUrl.length
         }
         if (numImages < 4) {
             images.push(
-                <div className="h-100px w-100px b-1blk ta-c mr-2">
+                <div className="h-100px w-100px b-1blk ta-c mr-2 mt-2">
                     <div className="mt-15per">
                         <RiImageAddFill className="f-45" />
                         <p className="m-0 f-12 f-b7">Add Photo</p>
@@ -241,7 +241,7 @@ class Post extends Component {
                 </div>
             )
             images.push(Array.from(new Array(4 - numImages - 1), () =>
-                <div className="h-100px w-100px b-1gry ta-c mr-2">
+                <div className="h-100px w-100px b-1gry ta-c mr-2 mt-2">
                     <div className="mt-25per">
                         <RiImageAddFill className="f-45 fc-g" />
                     </div>
@@ -289,7 +289,7 @@ class Post extends Component {
                     <div className="b-t-1slv p-3 pl-4 pb-4">
                         <p className="f-20 f-b7 mb-3">UPLOAD UPTO 4 PHOTOS (optional)</p>
                         <input disabled={inputDisable} accept="image/*" onChange={this.handleChange('image')} className='d-n' id="icon-button-file" type="file" />
-                        <label htmlFor="icon-button-file" className="d-fr h-p">{images}</label>
+                        <label htmlFor="icon-button-file" className="d-fr f-wr h-p">{images}</label>
                     </div>
                     {/* Location */}
                     <div className="b-t-1slv p-3 pl-4 pb-4">
@@ -332,4 +332,4 @@ class Post extends Component {
         )
     }
 }
-export default withSnackbar(Post)
+export default withRouter(withSnackbar(Post))

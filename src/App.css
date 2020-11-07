@@ -205,6 +205,7 @@
 .fc-w {color: white !important;}
 .fc-blk {color: black !important;}
 
+.t-30p{top: 30%;}
 .zInd-12{z-index: 12 !important; color: white !important;}
 
 .d-f-sb {
@@ -272,6 +273,7 @@
 
 .w-100{width: 100% !important;}
 .w-95{width: 95%;}
+.w-92{width: 92%;}
 .w-87{width: 87%;}
 .w-85{width: 85%;}
 .w-80{width: 80%;}
@@ -433,7 +435,7 @@
 
 .itemSeller-card {
     width: 425px;
-    height: 250px;
+    /* height: 250px; */
 }
 
 .itemMedia-card {
