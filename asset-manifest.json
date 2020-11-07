@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/SellIt/static/css/main.8d08aff3.chunk.css",
-    "main.js": "/SellIt/static/js/main.20034286.chunk.js",
-    "main.js.map": "/SellIt/static/js/main.20034286.chunk.js.map",
+    "main.js": "/SellIt/static/js/main.07c8787a.chunk.js",
+    "main.js.map": "/SellIt/static/js/main.07c8787a.chunk.js.map",
     "runtime-main.js": "/SellIt/static/js/runtime-main.da3b8ac2.js",
     "runtime-main.js.map": "/SellIt/static/js/runtime-main.da3b8ac2.js.map",
     "static/css/2.d9ad5f5c.chunk.css": "/SellIt/static/css/2.d9ad5f5c.chunk.css",
     "static/js/2.379b1262.chunk.js": "/SellIt/static/js/2.379b1262.chunk.js",
     "static/js/2.379b1262.chunk.js.map": "/SellIt/static/js/2.379b1262.chunk.js.map",
     "index.html": "/SellIt/index.html",
-    "precache-manifest.cdb00257c8e15df8e0bf69fcac069504.js": "/SellIt/precache-manifest.cdb00257c8e15df8e0bf69fcac069504.js",
+    "precache-manifest.48c5d8cfb4887f2442366970b111eb75.js": "/SellIt/precache-manifest.48c5d8cfb4887f2442366970b111eb75.js",
     "service-worker.js": "/SellIt/service-worker.js",
     "static/css/2.d9ad5f5c.chunk.css.map": "/SellIt/static/css/2.d9ad5f5c.chunk.css.map",
     "static/css/main.8d08aff3.chunk.css.map": "/SellIt/static/css/main.8d08aff3.chunk.css.map",
@@ -22,6 +22,6 @@
     "static/css/2.d9ad5f5c.chunk.css",
     "static/js/2.379b1262.chunk.js",
     "static/css/main.8d08aff3.chunk.css",
-    "static/js/main.20034286.chunk.js"
+    "static/js/main.07c8787a.chunk.js"
   ]
 }

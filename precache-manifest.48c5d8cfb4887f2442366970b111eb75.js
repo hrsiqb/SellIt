@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "4094cc45a1e250c2e787c79f5f6f5ef9",
+    "revision": "43182b7402f83d7bd65121ff281d094d",
     "url": "/SellIt/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/SellIt/static/css/2.d9ad5f5c.chunk.css"
   },
   {
-    "revision": "570096d993aa9d123db0",
+    "revision": "8de01309fb1521dd09c9",
     "url": "/SellIt/static/css/main.8d08aff3.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/SellIt/static/js/2.379b1262.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "570096d993aa9d123db0",
-    "url": "/SellIt/static/js/main.20034286.chunk.js"
+    "revision": "8de01309fb1521dd09c9",
+    "url": "/SellIt/static/js/main.07c8787a.chunk.js"
   },
   {
     "revision": "1a3b702a6cf6185ee00d",
