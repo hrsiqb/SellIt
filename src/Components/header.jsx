@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { Navbar, FormControl } from 'react-bootstrap'
-import { noUser } from '../data'
+import { Navbar } from 'react-bootstrap'
+import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField';
+import { cities } from '../data'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom"
-import { getLoginDetails, logout } from '../config/firebase'
+import { logout } from '../config/firebase'
 import { LoginDialogComp, RegisterDialogComp } from './dialog'
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import IconButton from '@material-ui/core/IconButton';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import Avatar from '@material-ui/core/Avatar';
@@ -19,17 +22,37 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import { FiLogOut, FiChevronDown } from 'react-icons/fi';
 import { GrDown } from 'react-icons/gr';
 import { BsFiles } from 'react-icons/bs';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
 class Header extends Component {
     constructor() {
         super()
         this.state = {
             userInfo: {},
+            search: { city: "All Pakistan" },
             openLoginDialog: false,
             openRegisterDialog: false,
             loading: false
         }
     }
+    handleChange = action => e => {
+        this.state.search[action] = e.target.value
+        switch (action) {
+            case 'city':
+                // this.state.search.city = e.target.value
+                this.setState(this.state)
+                this.props.search('city', e.target.value)
+                break
+            case 'search':
+                // this.state.search.search = e.target.value
+                break
+            default:
+                break
+        }
+    }
+    handleKeyDown = e => e.key === 'Enter' && this.handleSearch()
+    handleSearch = () => this.props.history.push({ pathname: '/', search: this.state.search.search })
     handleLogout = () => {
         this.state.loading = true
         new Promise((res, rej) => logout(res, rej))
@@ -42,7 +65,6 @@ class Header extends Component {
             })
             .catch((error) => {
                 this.setState({ ...this.state, loading: false })
-
                 this.showSnackBar(error.message, 'danger')
             })
     }
@@ -83,10 +105,25 @@ class Header extends Component {
                 <div id="basic-navbar-nav" className="d-c">
                     {/* <Nav className="m-auto"> */}
                     <Navbar.Collapse id="basic-navbar-nav">
-                        <FormControl type="text" defaultValue="Pakistan" className="mr-sm-2 w-25" />
-                        <FormControl type="text" placeholder="Search" className="mr-sm-2 w-50" />
-                        <Button className="ol-n bc-blk">
-                            <SearchIcon style={{ color: "white" }} />
+                        <FormControl disabled={this.props.loading} variant="outlined" className="w-100 w-m-270px mr-2 bc-w">
+                            <Select
+                                className="h-40"
+                                labelId="demo-mutiple-name-label"
+                                id="demo-mutiple-name"
+                                value={this.state.search.city}
+                                onChange={this.handleChange('city')}
+                            >
+                                {cities.map(name => (
+                                    <MenuItem key={name} value={name}>
+                                        <LocationOnIcon className="mr-2" />{name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <TextField disabled={this.props.loading} onChange={this.handleChange('search')} onKeyDown={this.handleKeyDown} size="small"
+                            className="w-80 w-m-538px mr-2 bc-w" id="outlined-basic" variant="outlined" />
+                        <Button disabled={this.props.loading} className="ol-n bc-blk fc-w h-40" onClick={this.handleSearch}>
+                            <SearchIcon />
                         </Button>
                         {this.state.userInfo.isLoggedIn ? (
                             <React.Fragment>
@@ -124,10 +161,10 @@ class Header extends Component {
                             : (
                                 <React.Fragment>
                                     <ButtonGroup className="ml-4 mr-3" variant="text" color="" aria-label="text primary button group">
-                                        <Button className="f-b fc-blk ol-n pr-3 pl-3" onClick={() => this.openDialog('login')}>Login</Button>
-                                        <Button className="f-b fc-blk ol-n pl-3 pr-3" onClick={() => this.openDialog('register')}>SignUp</Button>
+                                        <Button disabled={this.props.loading} className="f-b fc-blk ol-n pr-3 pl-3" onClick={() => this.openDialog('login')}>Login</Button>
+                                        <Button disabled={this.props.loading} className="f-b fc-blk ol-n pl-3 pr-3" onClick={() => this.openDialog('register')}>SignUp</Button>
                                     </ButtonGroup>
-                                    <Button className="mr-3 b-2blk f-20 ol-n bs-n f-b" onClick={() => this.openDialog('login')}
+                                    <Button disabled={this.props.loading} className="mr-3 b-2blk f-20 ol-n bs-n f-b" onClick={() => this.openDialog('login')}
                                     >+SELL</Button>
                                 </React.Fragment>
                             )}</Navbar.Collapse>

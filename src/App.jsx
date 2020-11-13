@@ -17,18 +17,17 @@ import {
     Route, Switch,
     HashRouter as Router, // if deploying on sub-directory uncomment this line
     // BrowserRouter as Router, // if deploying on root directory uncomment this line
-    withRouter
 } from "react-router-dom"
 import { connect } from "react-redux";
 import { set_data, get_data } from './store/action'
-import history from './history'
 
 class App extends Component {
     constructor() {
         super()
         this.state = {
             render: {},
-            userInfo: {}
+            userInfo: {},
+            search: { 'city': "All Pakistan" }
         }
     }
     componentDidMount() {
@@ -41,32 +40,37 @@ class App extends Component {
             .then((data) => {
                 if (!data.photoURL) data.photoURL = noUser.userPrimary
                 this.state.userInfo = data
-                if (data.phone) {
-                    this.state.userInfo.isLoggedIn = true
-                    this.state.render.loading = false
-                    this.setState(this.state)
-                }
-                else {
-                    new Promise((res, rej) => getUserData(res, rej, data.uId))
-                        .then((data) => {
-                            this.state.userInfo.phone = data.phone
-                            this.state.userInfo.friends = data.friends
-                            this.state.userInfo.isLoggedIn = true
-                            this.state.render.loading = false
-                            this.setState(this.state)
-                        })
-                        .catch((error) => {
-                            this.state.userInfo.isLoggedIn = false
-                            this.state.render.loading = false
-                            this.setState(this.state)
-                        })
-                }
+                // if (data.phone) {
+                //     this.state.userInfo.isLoggedIn = true
+                //     this.state.render.loading = false
+                //     this.setState(this.state)
+                // }
+                // else {
+                new Promise((res, rej) => getUserData(res, rej, data.uId))
+                    .then((data) => {
+                        this.state.userInfo.phone = data.phone
+                        this.state.userInfo.friends = data.friends
+                        this.state.userInfo.isLoggedIn = true
+                        this.state.render.loading = false
+                        this.setState(this.state)
+                    })
+                    .catch((error) => {
+                        this.state.userInfo.isLoggedIn = false
+                        this.state.render.loading = false
+                        this.setState(this.state)
+                    })
+                // }
             })
             .catch(() => {
                 this.state.userInfo.isLoggedIn = false
                 this.state.render.loading = false
                 this.setState(this.state)
             })
+    }
+    search = (type, keyword) => {
+        this.state.search = { [type]: keyword }
+        this.props.history.push('/')
+        this.setState(this.state)
     }
     render() {
         return (
@@ -76,12 +80,13 @@ class App extends Component {
                 </Backdrop>
                 <Router>
                     {/* <Header /> */}
-                    <Route path='/' children={<Header history={this.props.history} loginCallback={this.checkLoginStatus}
-                        userInfo={this.state.userInfo} />} />
-                    <Route path='/' component={CategoriesBar} />
+                    <Route path='/' children={<Header history={this.props.history} search={this.search}
+                        loginCallback={this.checkLoginStatus} loading={this.state.render.loading} userInfo={this.state.userInfo} />} />
+                    <Route path='/' children={<CategoriesBar history={this.props.history} search={this.search} />} />
                     {/* <CategoriesBar /> */}
                     <Switch>
-                        <Route exact path={['/', '/home']} children={<Home history={this.props.history} userInfo={this.state.userInfo} get_data={this.props.get_data} />} />
+                        <Route exact path={['/', '/home']} children={<Home history={this.props.history} loading={this.state.render.loading}
+                            userInfo={this.state.userInfo} search={this.state.search} get_data={this.props.get_data} />} />
                         <Route path='/item/:id' children={<Item history={this.props.history} userInfo={this.state.userInfo} get_data={this.props.get_data} />} />
                         <Route path='/post/success' children={<PostSuccess history={this.props.history} userInfo={this.state.userInfo} />} />
                         <Route path='/post' children={<Post history={this.props.history} userInfo={this.state.userInfo} />} />
@@ -91,7 +96,7 @@ class App extends Component {
                     </Switch>
 
                     {/* <Footer /> */}
-                    <Route path='/' component={Footer} />
+                    <Route path='/' children={<Footer history={this.props.history} search={this.search} />} />
                 </Router>
             </div>
         )

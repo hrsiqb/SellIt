@@ -1,7 +1,7 @@
 import { storage, insertAddData, getAllAdds, getAddData, getUserData } from '../../config/firebase'
 
 var INITIAL_STATE = {
-    addsToAppend: 20,
+    addsToAppend: 8,
     numberOfAdds: 0,
     firstRun: true,
     appendedData: Array.from(new Array(20)),

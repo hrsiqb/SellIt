@@ -32,6 +32,7 @@ const categories = {
     "Kids": MdChildFriendly
 }
 const cities = [
+    "All Pakistan",
     "Karachi",
     "Lahore",
     "Faisalabad",

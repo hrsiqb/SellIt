@@ -48,7 +48,7 @@ class Post extends Component {
             autoHideDuration: 5000
         });
     }
-    handleChange = (action) => (e) => {
+    handleChange = action => e => {
         switch (action) {
             case 'category':
                 for (var i = 0; i < e.currentTarget.parentNode.childNodes.length; i++) {
@@ -308,7 +308,8 @@ class Post extends Component {
                                         {name}
                                     </MenuItem>
                                 ))}
-                            </Select></FormControl>
+                            </Select>
+                        </FormControl>
                     </div>
                     {/* Phone number, if not provided */}
                     {!(this.state.userInfo.phone) &&

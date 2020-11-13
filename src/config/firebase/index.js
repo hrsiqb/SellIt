@@ -185,7 +185,7 @@ const getAllAdds = (firstRun, addsToAppend, mainResolve, mainReject) => {
             else optimizedData = fetchedData
             appendedData = Array.from(optimizedData)
             let returnData = {
-              addsToAppend: 20,
+              addsToAppend: 8,
               numberOfAdds,
               firstRun,
               appendedData,

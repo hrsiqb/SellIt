@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
+import { Navbar, NavDropdown } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { categories } from '../data';
-import { Link } from 'react-router-dom'
 
 class Header extends Component {
+    handleCategory = e => this.props.search('category', e.target.innerText)
     render() {
         const categoryList = Object.keys(categories).map((data, key) =>
-            <NavDropdown.Item><Link to="#" key={key} className="n-l">{data}</Link></NavDropdown.Item>)
+            <NavDropdown.Item><p key={key} className="m-1" onClick={this.handleCategory}>{data}</p></NavDropdown.Item>)
         return (
             (!(this.props.history.location.pathname.includes('post'))
                 && !(this.props.history.location.pathname.includes('chat')))
@@ -16,12 +16,13 @@ class Header extends Component {
                 <NavDropdown className="dropdownTitle" title="ALL CATEGORIES" id="basic-nav-dropdown">
                     {categoryList}
                 </NavDropdown>
-                <Nav.Link href="#home">Mobile Phones</Nav.Link>
-                <Nav.Link href="#home">Cars</Nav.Link>
-                <Nav.Link href="#home">Tablets</Nav.Link>
-                <Nav.Link href="#home">TV-Video_Audio</Nav.Link>
-                <Nav.Link href="#home">Houses</Nav.Link>
-                <Nav.Link href="#home">Lands & Plots</Nav.Link>
+                <p className="pt-2 pb-2 pr-3 pl-3 h-p m-0" onClick={this.handleCategory}>All Ads</p>
+                <p className="pt-2 pb-2 pr-3 pl-3 h-p m-0" onClick={this.handleCategory}>Mobiles</p>
+                <p className="pt-2 pb-2 pr-3 pl-3 h-p m-0" onClick={this.handleCategory}>Vehicles</p>
+                <p className="pt-2 pb-2 pr-3 pl-3 h-p m-0" onClick={this.handleCategory}>Property</p>
+                <p className="pt-2 pb-2 pr-3 pl-3 h-p m-0" onClick={this.handleCategory}>Bikes</p>
+                <p className="pt-2 pb-2 pr-3 pl-3 h-p m-0" onClick={this.handleCategory}>Jobs</p>
+                <p className="pt-2 pb-2 pr-3 pl-3 h-p m-0" onClick={this.handleCategory}>Animals</p>
             </Navbar>
         )
     }

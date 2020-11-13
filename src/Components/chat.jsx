@@ -33,7 +33,7 @@ export default class Chat extends Component {
     }
     componentDidUpdate() {
         console.log('didupdate')
-        if (!this.state.users.length)
+        if (!this.state.users.length && !this.state.render.noUsers)
             this.state.userInfo.isLoggedIn === true && this.getUsers()
     }
     shouldComponentUpdate(newProps, newState) {

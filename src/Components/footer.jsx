@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-
-import { Navbar, Nav, NavDropdown, Form, FormControl } from 'react-bootstrap'
+import { Nav } from 'react-bootstrap'
+import { AboutDialog } from './dialog'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsEnvelope } from 'react-icons/bs';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
@@ -9,35 +9,45 @@ import { FiPhone } from 'react-icons/fi';
 import { RiFacebookCircleLine, RiYoutubeLine, RiInstagramLine, RiTwitterLine } from 'react-icons/ri';
 
 class Footer extends Component {
+    constructor() {
+        super()
+        this.state = {
+            open: false
+        }
+    }
+    handleCategory = e => this.props.search('category', e.target.innerText)
+    handleDialog = () => this.setState({ open: true })
+    closeDialog = () => this.setState({ open: false })
     render() {
         return (
             (!(this.props.history.location.pathname.includes('post'))
                 && !(this.props.history.location.pathname.includes('chat')))
             &&
             <div>
+                <AboutDialog open={this.state.open} onClose={this.closeDialog} />
                 <div className="col-md-12 pl-5 pr-5 pt-2 pb-3" style={{ backgroundColor: "rgb(0, 44, 102)" }}>
                     <div className="row">
                         <div className="col-md-3 text-light mt-2">
                             <h6 className="display-6 text-light"><b>Top Categories</b></h6>
-                            <Nav.Link href="#home" className="footerLink">Mobile Phones</Nav.Link>
-                            <Nav.Link href="#home" className="footerLink">Lands & Plots</Nav.Link>
-                            <Nav.Link href="#home" className="footerLink">Motocycles</Nav.Link>
-                            <Nav.Link href="#home" className="footerLink">Cars</Nav.Link>
+                            <p className="footerLink" onClick={this.handleCategory}>Mobiles</p>
+                            <p className="footerLink" onClick={this.handleCategory}>Property</p>
+                            <p className="footerLink" onClick={this.handleCategory}>Bikes</p>
+                            <p className="footerLink" onClick={this.handleCategory}>Jobs</p>
                         </div>
                         <div className="col-md-3 text-light mt-2">
                             <h6 className="display-6 text-light"><b>Trending Searches</b></h6>
-                            <Nav.Link href="#home" className="footerLink">Bikes</Nav.Link>
-                            <Nav.Link href="#home" className="footerLink">Watches</Nav.Link>
-                            <Nav.Link href="#home" className="footerLink">Jobs</Nav.Link>
-                            <Nav.Link href="#home" className="footerLink">Mobiles</Nav.Link>
+                            <p className="footerLink" onClick={this.handleCategory}>Bikes</p>
+                            <p className="footerLink" onClick={this.handleCategory}>Vehicles</p>
+                            <p className="footerLink" onClick={this.handleCategory}>Jobs</p>
+                            <p className="footerLink" onClick={this.handleCategory}>Mobiles</p>
                         </div>
                         <div className="col-md-3 text-light mt-2">
                             <h6 className="display-6 text-light"><b>About Us</b></h6>
-                            <Nav.Link href="#home" className="footerLink">About SellIt</Nav.Link>
+                            <p className="footerLink" onClick={this.handleDialog}>About SellIt</p>
                         </div>
                         <div className="col-md-3 text-light mt-2">
                             <h6 className="display-6 text-light"><b>Contact Details</b></h6>
-                            <p className="footerLink"><HiOutlineLocationMarker /> Islamabad Pakistan</p>
+                            <p className="footerLink"><HiOutlineLocationMarker /> Islamabad, Pakistan</p>
                             <p className="footerLink"><BsEnvelope /> SellIt@gmail.com</p>
                             <p className="footerLink"><CgWebsite /> SellIt</p>
                             <p className="footerLink"><FiPhone /> 03123456789</p>

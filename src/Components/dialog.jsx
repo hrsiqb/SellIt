@@ -20,6 +20,26 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { FaFacebookF, FaGooglePlusG } from 'react-icons/fa';
 import { withSnackbar } from 'notistack';
 
+class AboutDialog extends Component {
+  render() {
+    return (
+      <Dialog onClose={this.props.onClose} aria-labelledby="simple-dialog-title" open={this.props.open}>
+        <div style={{ width: "400px" }}>
+          <List className="p-3 ta-c">
+            <h3 className="ta-c mb-2 f-b">About SellIt</h3>
+            <hr className="bt-g" />
+            <Grid className="mb-2 pr-1 pl-1" container spacing={1} alignItems="flex-end">
+              <p>OLX is Pakistan's leading online marketplace where you can buy and sell their stuff
+                to anyone who's interested. It's easy to use and user friendly GUI has everything you 
+                need. For login you have options like facebook, google and email login.
+              </p>
+            </Grid>
+          </List>
+        </div>
+      </Dialog>
+    )
+  }
+}
 class SendMessageDialog extends Component {
   constructor() {
     super()
@@ -570,4 +590,4 @@ class RegisterDialog extends Component {
 }
 const LoginDialogComp = withSnackbar(LoginDialog)
 const RegisterDialogComp = withSnackbar(RegisterDialog)
-export { LoginDialogComp, RegisterDialogComp, SendMessageDialog }
+export { LoginDialogComp, RegisterDialogComp, SendMessageDialog, AboutDialog }

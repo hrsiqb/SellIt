@@ -101,6 +101,7 @@
 
 .b-2bl {border: 2px solid blue !important;}
 .bu-ch{background-image: url(Images/background.jpg);}
+.bc-w {background-color: white !important;}
 .bc-blk {background-color: black !important;}
 .bc-trn {background-color: transparent !important;}
 .bc-gry {background-color: #f8f9fa}
@@ -262,7 +263,9 @@
 
 .w-m-1265px{max-width: 1265px;}
 .w-m-800px{max-width: 800px;}
+.w-m-538px{max-width: 538px;}
 .w-m-400px{max-width: 400px;}
+.w-m-270px{max-width: 270px;}
 
 .w-100px{width: 100px;}
 .w-65px{width: 65px;}
@@ -585,6 +588,7 @@
 .footerLink:hover {
     color: rgb(206, 201, 201) !important;
     color: rgb(72, 226, 72) !important;
+    cursor: pointer;
 }
 
 .socialHeading {
