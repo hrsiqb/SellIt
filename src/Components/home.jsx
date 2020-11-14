@@ -86,8 +86,8 @@ class Home extends Component {
                                 return <ItemCard data={data} key={index} />
                             }
                         })
+                        hidden = true
                     }
-                    hidden = true
                     break
                 default:
                     break
